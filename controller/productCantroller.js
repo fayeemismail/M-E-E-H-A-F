@@ -1,0 +1,157 @@
+const products = require('../models/productModel');
+const category = require('../models/categoryModel');
+const { categories } = require('./categoryController');
+const { product } = require('./adminController');
+const { finished } = require('nodemailer/lib/xoauth2');
+
+const newProducts = async (req, res) => {
+
+    try {
+        const categoryData = await category.find()
+        res.render('newProducts', { categories: categoryData })
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+
+const addProducts = async (req, res) => {
+    try {
+        const { name, description, price, stock, image, category } = req.body;
+        console.log(req.body)
+        // Check if name is valid
+        if (!name || name.trim().length <= 3) {
+            return res.render('newProducts', { message: 'The name should contain at least 3 letters' });
+        }
+        // Check if product with the same name already exists
+        const existingProduct = await products.findOne({ name: name });
+        if (existingProduct) {
+            return res.render('newProducts', { message: 'A product with the same name already exists' });
+        }
+
+        const imagePath = req.files.map(file => `${file.filename}`)
+        // Create new product
+        const newProduct = new products({
+            name: name,
+            description: description,
+            price: price,
+            stock: stock,
+            image: imagePath,
+            category: category
+        });
+        // console.log(category)
+        // Save new product
+        const saving = await newProduct.save();
+        if (saving) {
+            console.log('Product saved successfully');
+            // Send success response
+            res.send({ success: 1 })
+        }
+    } catch (error) {
+        console.error('Error saving product:', error);
+        // Handle error, maybe render an error page
+        return res.status(500).render('error', { message: 'Internal server error' });
+    }
+};
+
+
+
+
+const editProducts = async (req, res) => {
+
+    try {
+        const productId = req.query.id;
+        const categoryData = await category.find({ status: true })
+        
+
+        const item = await products.findById(productId)
+
+        // console.log('this is item '+item+ ' ' + 'this is category ' + categoryData)
+
+        res.render('editProducts', { product: item, categories: categoryData })
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+const updateProducts = async (req, res) => {
+    try {
+        const productData = req.body;
+        const imageData = req.files;
+        const existImagePaths = req.body.existImagePaths;
+
+        const findItem = await products.findOne({ _id: productData.productId });
+        if (!findItem) {
+            return res.status(404).send({ success: 0, message: 'Product not found' });
+        }
+        // Update product details
+        findItem.name = productData.name;
+        findItem.description = productData.description;
+        findItem.price = productData.price;
+        findItem.stock = productData.stock;
+        findItem.category = productData.category;
+
+        if(req.files && req.files.length > 0 ){
+            req.files.forEach(item => {
+                if(item.originalname === 'imageInput0'){
+                    findItem.image[0] = item.filename
+                }else if (item.originalname === 'imageInput1'){
+                    findItem.image[1] = item.filename
+                }else{
+                    findItem.image[2] = item.filename
+                }
+            });
+        }
+
+        // Save product
+        const savedProduct = await findItem.save();
+        if (savedProduct) {
+            res.send({ success: 1 });
+            console.log('Successfully edited the product');
+        } else {
+            res.status(500).send({ success: 0, message: 'Failed to save the product' });
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ success: 0, message: 'Internal server error' });
+    }
+};
+
+
+
+
+
+const productBlock = async (req, res) => {
+
+    try {
+        const productId = req.query.id;
+        console.log(productId)
+        const productData = await products.findOne({ _id: productId });
+        productData.status = !productData.status
+        const saving = await productData.save();
+
+        if (saving) {
+            res.send({ success: 1 })
+            console.log(productId + ' listing or unlisting productId')
+        } else {
+            res.send({ success: 0 })
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.send({ success: 0 })
+    }
+}
+
+
+
+module.exports = {
+    newProducts,
+    addProducts,
+    editProducts,
+    updateProducts,
+    productBlock,
+}
