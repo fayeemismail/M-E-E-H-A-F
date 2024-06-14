@@ -2,13 +2,16 @@ const user = require('../models/userModel');
 const sendOtp = require('../controller/otpController');
 const OTP = require('../models/otpModel');
 const bcrypt = require('bcrypt');
-const products = require('../models/productModel')
+const products = require('../models/productModel');
+
+
 
 const home = async (req, res) => {
     try {
+        const userData = req.session;
         const allProduct = await products.find()
 
-        res.render('home', {Products:allProduct});
+        res.render('home', {Products:allProduct, User:userData});
     } catch (error) {
         console.log(error);
     }
@@ -211,73 +214,69 @@ const forgotPass = async (req,res) => {
 
 // THIS IS FOR FORGOT PASSWORD LINK SHARE
 const fpLink = async (req,res) => {
-
     try {
-        if(!req.session || !req.session.email) {
-            res.render('forgotPass', { message:'Unauthorized: No session found' })
-        }
-        const email = req.body.email;
-        console.log(email,'this is emailllllllllllllllllllllllll')
-        // CHECKING IF THE OTP EXISTS IN THE DATABASE
-        const existingOtp = await otp.findOne({ email: email });
-
-        // IF IT EXISTS, DELETE THE DOCUMENT
-        if (existingOtp) {
-          await otp.deleteOne({ email: email });
-        }
-
-
-        const newOtp = Math.floor(1000 + Math.random() * 9000).toString(); 
-
-        const otpDocument = new otp({
-            email: email,
-            otp: newOtp,
-            createdAt: new Date()
-        });
-
-        const saving = await otpDocument.save();
-        if(saving){
-            console.log('otpDocument saved in the database at in fpLink');
-
-
-            setTimeout(async () => {
-                await otp.deleteOne({ email:email });
-                console.log('the otp will delete at 120 sec fpLink');
-            },120000)
-
-            const transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth:{
-                    user: 'fayeemwayne@gmail.com',
-                    pass: 'ccyttfulxvmzxstl'
-                }
+        const {email} = req.body;
+        req.session.email = email
+        const userData = await user.findOne({email:email});
+        if(userData){
+            const otp = sendOtp.sendOtp(email);
+            const Data = new OTP({
+                email:email,
+                otp:otp
             });
 
-            const mailOptions = {
-                from: 'fayeemwayne@gmail.com',
-                to: email,
-                subject: 'Your OTP Code',
-                text: `Your OTP code is ${newOtp}. It is valid for 2 minutes.`
-              };
+            await Data.save()
+            res.render('fpOTP')
+        };
         
-              transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                  console.log(error);
-                  return res.status(500).render('otp', { message: "Error sending OTP" });
-                } else {
-                  console.log('Email sent: ' + info.response);
-                  res.render('otp', { message: "OTP resent successfully" });
-                }
-              });
-        } else {
-            res.status(500).render('otp', { message: "Error saving OTP" });
-          }
-
+       
     } catch (error) {
         console.log(error)
     }
 
 }
+
+const fpverify = async (req,res) => {
+
+    try {
+        const {otp} = req.body;
+        const email = req.session.email;
+        const OTPData = await OTP.findOne({email:email});
+        console.log(OTPData)
+        if(OTPData && OTPData.otp == parseInt(otp)){
+            console.log('USER REGISTERED SUCCESSFULLY');
+            res.render('changePassword')
+        }else{
+            console.log('USER VERIFICATION FAILED')
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+const newPassword = async (req,res) => {
+
+    try {
+        const { Password, confirmPassword } = req.body
+        const email = req.session.email
+        const userData = await user.findOne({email:email});
+        const hashedPassword = await bcrypt.hash(Password, 10)
+        if(userData){
+
+            userData.password = hashedPassword
+
+            await userData.save();
+            res.render('login')
+        }
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+
 
 
 const singleProduct = async (req,res) => {
@@ -298,6 +297,20 @@ const singleProduct = async (req,res) => {
 
 }
 
+const userProfile = async (req,res) => {
+      
+    try {
+        res.render('userProfile')
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+
+
+
+
 
 
 
@@ -312,8 +325,10 @@ module.exports = {
     logout,
     forgotPass,
     fpLink,
-    singleProduct
-
+    singleProduct,
+    userProfile,
+    fpverify,
+    newPassword,
     
 };
 

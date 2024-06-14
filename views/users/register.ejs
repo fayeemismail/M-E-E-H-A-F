@@ -6,16 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    
     <link rel="stylesheet" href="/user/login_assets/css/style.css">
 
+    <style>
+        .toggle-password {
+            cursor: pointer;
+            float: right;
+            margin-right: 10px;
+            margin-top: -30px;
+            position: relative;
+            z-index: 2;
+        }
+    </style>
 </head>
 <body>
 <section class="ftco-section">
     <div class="container">
-        
         <div class="row justify-content-center" style="margin-top: -70px;">
             <div class="col-md-12 col-lg-10">
                 <div class="wrap d-md-flex">
@@ -29,7 +36,6 @@
                             <div class="form-group mb-3">
                                 <% if (typeof message !== 'undefined') { %>
                                  <p class="text-danger"> <%= message %></p>
-                                    
                                 <% } %>
                                 <label class="label" for="name">Username</label>
                                 <input type="text" class="form-control" placeholder="Username" required name="name">
@@ -37,8 +43,7 @@
                             <div class="form-group mb-3">
                                 <% if (typeof message1 !== 'undefined') { %>
                                     <p class="text-danger"> <%= message1 %></p>
-                                       
-                                   <% } %>
+                                <% } %>
                                 <label class="label" for="email">Email</label>
                                 <input type="email" class="form-control" placeholder="Email" required name="email">
                             </div>
@@ -48,15 +53,16 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label class="label" for="password">Password</label>
-                                <input type="password" class="form-control" placeholder="Password" required name="password">
+                                <input type="password" class="form-control" placeholder="Password" required name="password" id="password">
+                                <span toggle="#password" class="fa fa-fw fa-eye toggle-password"></span>
                             </div>
                             <div class="form-group mb-3">
                                 <% if (typeof message2 !== 'undefined') { %>
                                     <p class="text-danger"> <%= message2 %></p>
-                                       
-                                   <% } %>
+                                <% } %>
                                 <label class="label" for="confirm-password">Confirm Password</label>
-                                <input type="password" class="form-control" placeholder="Confirm Password" required name="cPassword">
+                                <input type="password" class="form-control" placeholder="Confirm Password" required name="cPassword" id="cPassword">
+                                <span toggle="#cPassword" class="fa fa-fw fa-eye toggle-password"></span>
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="form-control btn btn-primary rounded submit px-3">Register</button>
@@ -74,6 +80,17 @@
 <script src="/user/login_assets/js/bootstrap.min.js"></script>
 <script src="/user/login_assets/js/main.js"></script>
 
+<script>
+    $(document).on('click', '.toggle-password', function() {
+        $(this).toggleClass('fa-eye fa-eye-slash');
+        var input = $($(this).attr('toggle'));
+        if (input.attr('type') == 'password') {
+            input.attr('type', 'text');
+        } else {
+            input.attr('type', 'password');
+        }
+    });
+</script>
+
 </body>
 </html>
-

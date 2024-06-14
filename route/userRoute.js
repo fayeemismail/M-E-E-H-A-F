@@ -26,7 +26,8 @@ user_route.use(bodyParser.urlencoded({extended:true}));
 //REQUIRING USER CONTROLLER
 const userController = require('../controller/userController')
 const otpController = require('../controller/otpController');
-const productCantroller = require('../controller/productCantroller')
+const productCantroller = require('../controller/productCantroller');
+const cartController = require('../controller/cartController')
 
 // REQUIRING AUTH MIDDELEWARE
 const userAuth = require('../middlewares/userAuth');
@@ -37,7 +38,7 @@ user_route.get('/' , userController.home);
 //ROUTE FOR LOGIN PAGE
 user_route.get('/login', userAuth.is_logout ,userController.login)
 //ROUTE FOT SHOP PAGE
-user_route.get('/shop' , userController.shop);
+user_route.get('/shop' , userAuth.is_login , userController.shop);
 //ROUTE FOR REGISTER PAGE
 user_route.get('/register', userAuth.is_logout ,userController.register);
 //ROUTE FOR ADD USER PAGE
@@ -49,15 +50,27 @@ user_route.post('/authUser', userAuth.is_logout ,userController.authUser);
 
 user_route.get('/resendOtp' ,otpController.resendOtp);
 
-
-user_route.get('/logout', userAuth.is_login ,userController.logout);
+user_route.get('/logout' ,userController.logout);
 
 user_route.get('/forgotPass', userController.forgotPass);
 
-user_route.get('/singleProduct', userController.singleProduct)
+user_route.post('/fpasswordOTP', userController.fpLink);
 
+user_route.get('/singleProduct', userAuth.is_login , userController.singleProduct);
 
+user_route.get('/userProfile', userController.userProfile);
 
+user_route.post('/fpOTP', userController.fpverify)
+
+user_route.post('/newPassword', userController.newPassword);
+
+user_route.get('/cart',  userAuth.is_login , cartController.showCart);
+
+user_route.post('/checkCart', userAuth.is_login  , cartController.checkCart)
+
+user_route.post('/addCart', cartController.addCart);
+
+user_route.post('/removeCart', cartController.removeCart);
 
 
 
