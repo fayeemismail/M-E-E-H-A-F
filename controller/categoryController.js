@@ -81,7 +81,6 @@ const categoryBlock = async (req, res) => {
         const itemData = await category.findOne({ _id: itemId });
         itemData.status = !itemData.status;
         const saving = await itemData.save();
-
         if (saving) {
             res.send({ success: 1 });
             console.log(itemId + ' listing or unlisting data');

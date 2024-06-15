@@ -7,7 +7,7 @@ const { finished } = require('nodemailer/lib/xoauth2');
 const newProducts = async (req, res) => {
 
     try {
-        const categoryData = await category.find()
+        const categoryData = await category.find();
         res.render('newProducts', { categories: categoryData })
     } catch (error) {
         console.log(error)
@@ -128,7 +128,6 @@ const productBlock = async (req, res) => {
 
     try {
         const productId = req.query.id;
-        console.log(productId)
         const productData = await products.findOne({ _id: productId });
         productData.status = !productData.status
         const saving = await productData.save();
@@ -148,10 +147,39 @@ const productBlock = async (req, res) => {
 
 
 
+
+const sortProduct = async (req,res)=> {
+    try {
+        const itemData = req.body.itemValue
+        if(itemData){
+            let productData;
+            if(itemData == 'sortAZ'){
+                    productData = await products.find().sort({name:1})
+            }else if(itemData == 'sortZA'){
+                    productData = await products.find().sort({name:-1})
+            }else if(itemData == 'PriceLow'){
+                productData = await products.find().sort({price:1})
+            }else{
+                productData = await products.find().sort({price:-1})
+            }
+
+            console.log(productData, 'this is productData in line 166')
+
+            res.status(200).json({success: true, productData: productData})
+
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
 module.exports = {
     newProducts,
     addProducts,
     editProducts,
     updateProducts,
     productBlock,
+    sortProduct
 }

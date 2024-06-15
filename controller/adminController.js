@@ -25,8 +25,15 @@ const login = async (req, res) => {
 
 const product = async (req, res) => {
     try {
-        const item = await products.find()
-        res.render('product', {item});
+        const allProducts = await products.find();
+        const falseCategories = await category.find({status:false});
+
+        const falseCategoryName = falseCategories.map(categories => categories.name);
+
+        const ProductInFalseCategory = await products.find({category:{$in: falseCategoryName }});
+
+        const filteredProdcts = allProducts.filter(product => !falseCategoryName.includes(product.category));
+        res.render('product', {item:filteredProdcts});
 
     } catch (error) {
         console.log(error)

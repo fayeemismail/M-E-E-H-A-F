@@ -58,7 +58,7 @@ user_route.post('/fpasswordOTP', userController.fpLink);
 
 user_route.get('/singleProduct', userAuth.is_login , userController.singleProduct);
 
-user_route.get('/userProfile', userController.userProfile);
+user_route.get('/userProfile', userAuth.is_login , userController.userProfile);
 
 user_route.post('/fpOTP', userController.fpverify)
 
@@ -72,7 +72,9 @@ user_route.post('/addCart', cartController.addCart);
 
 user_route.post('/removeCart', cartController.removeCart);
 
+user_route.post('/sortItem', productCantroller.sortProduct)
 
+user_route.post('/detailsChange', userController.detailsChange)
 
 
 

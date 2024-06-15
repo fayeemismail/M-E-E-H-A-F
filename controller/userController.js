@@ -3,15 +3,22 @@ const sendOtp = require('../controller/otpController');
 const OTP = require('../models/otpModel');
 const bcrypt = require('bcrypt');
 const products = require('../models/productModel');
+const category = require('../models/categoryModel')
 
 
 
 const home = async (req, res) => {
     try {
         const userData = req.session;
-        const allProduct = await products.find()
+        const allProduct = await products.find();
 
-        res.render('home', {Products:allProduct, User:userData});
+        const falseCategories = await category.find({status:false});
+
+        const falseCategoryName = falseCategories.map(category => category.name);
+
+        const productsInFalseCategory = allProduct.filter(product => !falseCategoryName.includes(product.category))
+
+        res.render('home', {Products:productsInFalseCategory, User:userData});
     } catch (error) {
         console.log(error);
     }
@@ -19,32 +26,21 @@ const home = async (req, res) => {
 
 
 
-//     try {
-//         const userEmail = req.session.email; // Assuming the user ID is stored in the session
-//         const userData = await user.findOne({userEmail:userEmail});
 
-//         if (!userData) {
-//             return res.redirect('/login'); // Redirect to login if the user is not found
-//         }
-
-//         if (userData.is_blocked==true) {
-//             return res.render('login', { message: 'You are blocked' });
-//         }
-
-//         res.render('home');
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// };
 
 
 
 const shop = async (req, res) => {
     try {
-        const allProduct = await products.find()
+        const allProduct = await products.find();
 
-        res.render('shop', {Products:allProduct});
+        const falseCategories = await category.find({status:false});
+
+        const falseCategoryName = falseCategories.map(category => category.name);
+
+        const productsInFalseCategory = allProduct.filter(product => !falseCategoryName.includes(product.category))
+
+        res.render('shop', {Products:productsInFalseCategory});
       
     } catch (error) {
         console.log(error);
@@ -288,7 +284,6 @@ const singleProduct = async (req,res) => {
         const cateItem = await products.find({category:findItem.category});
         
         
-        
 
         res.render('singleProduct', {Product:findItem, Related:cateItem})
     } catch (error) {
@@ -300,14 +295,46 @@ const singleProduct = async (req,res) => {
 const userProfile = async (req,res) => {
       
     try {
-        res.render('userProfile')
+        const userId = req.session.user_id;
+        const userData = await user.findOne({_id:userId});
+        res.render('userProfile', {userData:userData})
     } catch (error) {
         console.log(error)
     }
 
 }
 
+const detailsChange = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const { name, mobile, curPassword, newPassword } = req.body;
+        const userData = await user.findOne({ _id: userId });
 
+        if (!userData) {
+            return res.json({ success: false, message: 'User not found' });
+        }
+
+        const checkPass = await bcrypt.compare(curPassword, userData.password);
+        if (!checkPass) {
+            return res.json({ success: false, message: 'The Current Password is not matching. Try again' });
+        }
+
+        if (newPassword) {
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            userData.password = hashedPassword;
+        }
+
+        userData.name = name;
+        userData.mobile = mobile;
+        
+        await userData.save();
+        console.log('The user details changed and saved to database successfully');
+        return res.json({ success: true });
+    } catch (error) {
+        console.log(error);
+        return res.json({ success: false, message: 'An error occurred. Please try again.' });
+    }
+};
 
 
 
@@ -329,7 +356,8 @@ module.exports = {
     userProfile,
     fpverify,
     newPassword,
-    
+    detailsChange,
+
 };
 
 

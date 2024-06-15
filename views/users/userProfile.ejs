@@ -3,6 +3,7 @@
 
 
 <!-- Mirrored from htmldemo.net/furbar-1/furbar/my-account.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 14 Dec 2023 16:16:18 GMT -->
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
@@ -31,6 +32,37 @@
     <!-- Main Style CSS -->
     <!-- <link rel="stylesheet" href="/account/assets/css/style.css"> -->
     <link rel="stylesheet" href="/account/assets/css/style.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        .password-input {
+            position: relative;
+        }
+    
+        .password-input input[type="password"] {
+            padding-right: 30px; /* Adjust this value as needed */
+        }
+    
+        .password-input .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px; /* Adjust the right offset for proper alignment */
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    
+        .single-form {
+            position: relative; /* Ensure relative positioning for icon alignment */
+        }
+    
+        .single-form .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 
@@ -50,16 +82,16 @@
                         <ul class="nav-menu">
                             <li>
                                 <a href="/">Home</a>
-                               
+
                             </li>
                             <li>
                                 <a href="/shop">Shop</a>
-                                
+
                             </li>
-                            
+
                             <li>
                                 <a href="/cart">Cart</a>
-                                
+
                             </li>
 
                         </ul>
@@ -88,7 +120,8 @@
                         </div>
 
                         <div class="dropdown">
-                            <a class="action" href="#" role="button" data-bs-toggle="dropdown"><i class="pe-7s-user"></i></a>
+                            <a class="action" href="#" role="button" data-bs-toggle="dropdown"><i
+                                    class="pe-7s-user"></i></a>
 
                             <ul class="dropdown-menu dropdown-profile">
                                 <li><a href="my-account.html">My Account</a></li>
@@ -138,7 +171,8 @@
                     <div class="col">
                         <!-- Header Logo Start -->
                         <div class="header-logo text-center">
-                            <a href="index.html"><img src="/account/assets/images/logo.png" width="154" height="46" alt="Logo" /></a>
+                            <a href="index.html"><img src="/account/assets/images/logo.png" width="154" height="46"
+                                    alt="Logo" /></a>
                         </div>
                         <!-- Header Logo End -->
                     </div>
@@ -146,7 +180,8 @@
                         <!-- Header Action Start -->
                         <div class="header-meta">
                             <div class="dropdown">
-                                <a class="action" href="#" role="button" data-bs-toggle="dropdown"><i class="pe-7s-user"></i></a>
+                                <a class="action" href="#" role="button" data-bs-toggle="dropdown"><i
+                                        class="pe-7s-user"></i></a>
 
                                 <ul class="dropdown-menu dropdown-profile">
                                     <li>
@@ -286,10 +321,12 @@
                                 </li>
 
                                 <li class="manu-banner">
-                                    <a href="#"><img src="/account/assets/images/banner-menu-01.jpg" width="465" height="170" alt="Banner" /></a>
+                                    <a href="#"><img src="/account/assets/images/banner-menu-01.jpg" width="465"
+                                            height="170" alt="Banner" /></a>
                                 </li>
                                 <li class="manu-banner">
-                                    <a href="#"><img src="/account/assets/images/banner-menu-02.jpg" width="465" height="170" alt="Banner" /></a>
+                                    <a href="#"><img src="/account/assets/images/banner-menu-02.jpg" width="465"
+                                            height="170" alt="Banner" /></a>
                                 </li>
                             </ul>
                         </li>
@@ -357,7 +394,7 @@
 
 
     <!-- Page Banner Section Start -->
-    <div class="section page-banner-section" style="background-image: url(/account/assets/images/page-banner.jpg)">
+    <div class="section page-banner-section" style="background-image: url(/account/assets/images/adventure.png)">
         <div class="container">
             <!-- Page Banner Content End -->
             <div class="page-banner-content">
@@ -382,7 +419,8 @@
                     <div class="my-account-menu">
                         <ul class="nav account-menu-list flex-column">
                             <li>
-                                <a class="active" data-bs-toggle="pill" href="#pills-dashboard"><i class="fa fa-tachometer"></i>
+                                <a class="active" data-bs-toggle="pill" href="#pills-dashboard"><i
+                                        class="fa fa-tachometer"></i>
                                     Dashboard</a>
                             </li>
                             <li>
@@ -415,6 +453,7 @@
                 </div>
                 <div class="col-xl-9 col-md-8">
                     <!-- Tab content start -->
+
                     <div class="tab-content my-account-tab">
                         <div class="tab-pane fade show active" id="pills-dashboard">
                             <div class="my-account-dashboard account-wrapper">
@@ -422,17 +461,16 @@
                                 <div class="welcome-dashboard">
                                     <p>
                                         Hello,
-                                        <strong>Alex Tuntuni</strong> (If
-                                        Not <strong>Tuntuni !</strong>
-                                        <a href="login.html">Logout</a> )
+                                        <strong>
+                                            <%= userData.name %>!!!!!!!
+                                        </strong>
                                     </p>
                                 </div>
                                 <p>
-                                    From your account dashboard. you can
-                                    easily check & view your recent orders,
-                                    manage your shipping and billing
-                                    addresses and edit your password and
-                                    account details.
+                                    Welcome To
+                                    M e e ' h a f. Where The dreams comes true, once you buy it you'll never forget it
+                                    we are happy to serve you how ever we can please feel free to discover our app. if
+                                    you have any doubts our customer service is 24/7
                                 </p>
                             </div>
                         </div>
@@ -560,28 +598,11 @@
                                             <p>
                                                 1355 Market St, Suite 900
                                                 <br />
-                                                    San Francisco, CA 94103
+                                                San Francisco, CA 94103
                                             </p>
                                             <p>Mobile: (123) 456-7890</p>
-                                            <a class="btn btn-primary btn-hover-dark" href="#"><i class="fa fa-edit"></i>
-                                                Edit Address</a>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="account-address">
-                                            <h4 class="account-title">
-                                                Shipping address
-                                            </h4>
-                                            <h6 class="name">
-                                                Alex Tuntuni
-                                            </h6>
-                                            <p>
-                                                1355 Market St, Suite 900
-                                                <br />
-                                                    San Francisco, CA 94103
-                                            </p>
-                                            <p>Mobile: (123) 456-7890</p>
-                                            <a class="btn btn-primary btn-hover-dark" href="#"><i class="fa fa-edit"></i>
+                                            <a class="btn btn-primary btn-hover-dark" href="#"><i
+                                                    class="fa fa-edit"></i>
                                                 Edit Address</a>
                                         </div>
                                     </div>
@@ -594,60 +615,72 @@
                                 <h4 class="account-title">
                                     Account Details
                                 </h4>
-
-                                <div class="account-details">
+                                <form id="details_form" class="account-details" onsubmit="return validateForm()">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="single-form">
-                                                <input type="text" placeholder="First Name" />
+                                                <label for="userName" style="font-weight: bold;">Name</label>
+                                                <input type="text" id="userName" value="<%= userData.name %>"
+                                                    name="name" required />
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6" style="display: none;" hidden>
                                             <div class="single-form">
-                                                <input type="text" placeholder="Last Name" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="single-form">
-                                                <input type="text" placeholder="Display Name" />
+                                                <input type="text" id="last-name" />
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="single-form">
-                                                <input type="text" placeholder="Email address" />
+                                                <label for="userMobile" style="font-weight: bold;">Mobile</label>
+                                                <input type="text" id="userMobile" value="<%= userData.mobile %>"
+                                                    name="phone" required oninput="validatePhoneNumber()" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12" style="display: none;" hidden>
+                                            <div class="single-form">
+                                                <input type="text" id="email" placeholder="Email address" />
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="single-form">
-                                                <h5 class="title">
+                                                <h5 class="title" style="font-weight: bolder;">
                                                     Password change
                                                 </h5>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="single-form">
-                                                <input type="password" placeholder="Current Password" />
+                                                <label for="curPassword">Current Password</label>
+                                                <% if (typeof message !== 'undefined') { %>
+                                                    <p class="text-danger"><%= message %></p>
+                                                <% } %>
+                                                <div class="password-input">
+                                                    <input type="password" id="current-password" placeholder="Current Password" name="currentPassword" required />
+                                                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('current-password')"></i>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="single-form">
-                                                <input type="password" placeholder="New Password" />
+                                                <input type="password" id="new-password" placeholder="New Password" name="newPassword" required />
+                                                <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('new-password')"></i>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="single-form">
-                                                <input type="password" placeholder="Confirm Password" />
+                                                <input type="password" id="confirm-password" placeholder="Confirm Password" name="confirmPassword" required />
+                                                <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('confirm-password')"></i>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="single-form">
-                                                <button class="btn btn-primary btn-hover-dark">
+                                                <button type="submit" class="btn btn-primary btn-hover-dark">
                                                     Save Change
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -661,7 +694,7 @@
     <!-- Footer Section Start -->
     <div class="section footer-section">
         <!-- Footer Top Start -->
-       
+
         <!-- Footer Top End -->
 
         <!-- Footer Widget Section Start -->
@@ -805,10 +838,109 @@
     <script src="/account/assets/js/plugins/jquery.zoom.min.js"></script>
 
     <!-- Main JS -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/account/assets/js/main.js"></script>
 
 </body>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.getElementById('details_form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (validateForm()) {
+            Swal.fire({
+                title: 'Do you want to change?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, change it!',
+                icon: 'warning'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    detailsChange();
+                }
+            });
+        }
+    });
+
+    function detailsChange() {
+        const name = document.getElementById('userName').value;
+        const mobile = document.getElementById('userMobile').value;
+        const curPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('mobile', mobile);
+        formData.append('curPassword', curPassword);
+        formData.append('newPassword', newPassword);
+        formData.append('confirmPassword', confirmPassword);
+
+        axios.post('/detailsChange', formData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.data.success) {
+                    Swal.fire('Changed successfully', '', 'success').then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', response.data.message || 'Something went wrong', 'error');
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                Swal.fire('Error', 'Something went wrong', 'error');
+            });
+    }
+
+    function validatePhoneNumber() {
+        const phoneInput = document.getElementById("userMobile");
+        phoneInput.value = phoneInput.value.replace(/[^0-9]/g, '');
+    }
+
+    function validateForm() {
+        const phone = document.getElementById("userMobile").value;
+        const newPassword = document.getElementById("new-password").value;
+        const confirmPassword = document.getElementById("confirm-password").value;
+        const phonePattern = /^[0-9]{10}$/;
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!phonePattern.test(phone)) {
+            Swal.fire('Invalid phone number', 'Please enter a valid 10-digit phone number.', 'warning');
+            return false;
+        }
+
+        if (newPassword && !passwordPattern.test(newPassword)) {
+            Swal.fire('Weak password', 'New Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.', 'warning');
+            return false;
+        }
+
+        if (newPassword !== confirmPassword) {
+            Swal.fire('Password mismatch', 'New Password and Confirm Password do not match.', 'warning');
+            return false;
+        }
+
+        return true;
+    }
+
+    function togglePasswordVisibility(id) {
+        const passwordField = document.getElementById(id);
+        const icon = passwordField.nextElementSibling;
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+</script>
 
 <!-- Mirrored from htmldemo.net/furbar-1/furbar/my-account.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 14 Dec 2023 16:16:18 GMT -->
+
 </html>

@@ -269,6 +269,7 @@
 }
 .pe-7s-search:before {
 	content: "\e618";
+	color: rgb(0, 0, 0);
 }
 .pe-7s-film:before {
 	content: "\e6a5";
