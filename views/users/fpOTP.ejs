@@ -56,6 +56,9 @@
                             <form id="otpVerificationForm" method="post" action="/fpOTP" class="signin-form">
                                 <div class="form-group mb-3">
                                     <label class="label" for="otp">Enter OTP</label>
+                                    <% if (typeof message !== 'undefined') { %>
+                                     <p class="text-danger"> <%= message %></p>
+                                    <% } %>
                                     <div class="otp-container">
                                         <input type="text" class="otp-input" maxlength="1" id="otp1" name="otp1" required>
                                         <input type="text" class="otp-input" maxlength="1" id="otp2" name="otp2" required>
@@ -67,7 +70,7 @@
                                 <div class="form-group">
                                     <button type="submit" id="verifyOtpButton" class="form-control btn btn-primary rounded submit px-3">Verify OTP</button>
                                 </div>
-                                <p class="text-center">Didn't receive the code? <a href="/" class="resend-otp " id="resendOtpLink2">Resend</a></p>
+                                <p class="text-center">Didn't receive the code???????? <a href="/fpResendOtp" class="resend-otp " id="resendOtpLink2">Resend</a></p>
                             </form>
                             <p class="text-center"><a href="/login">Back to Login</a></p>
                         </div>

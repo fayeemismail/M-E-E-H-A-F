@@ -38,23 +38,26 @@
         .password-input {
             position: relative;
         }
-    
+
         .password-input input[type="password"] {
-            padding-right: 30px; /* Adjust this value as needed */
+            padding-right: 30px;
+            /* Adjust this value as needed */
         }
-    
+
         .password-input .toggle-password {
             position: absolute;
             top: 50%;
-            right: 10px; /* Adjust the right offset for proper alignment */
+            right: 10px;
+            /* Adjust the right offset for proper alignment */
             transform: translateY(-50%);
             cursor: pointer;
         }
-    
+
         .single-form {
-            position: relative; /* Ensure relative positioning for icon alignment */
+            position: relative;
+            /* Ensure relative positioning for icon alignment */
         }
-    
+
         .single-form .toggle-password {
             position: absolute;
             top: 50%;
@@ -453,7 +456,6 @@
                 </div>
                 <div class="col-xl-9 col-md-8">
                     <!-- Tab content start -->
-
                     <div class="tab-content my-account-tab">
                         <div class="tab-pane fade show active" id="pills-dashboard">
                             <div class="my-account-dashboard account-wrapper">
@@ -601,14 +603,22 @@
                                                 San Francisco, CA 94103
                                             </p>
                                             <p>Mobile: (123) 456-7890</p>
-                                            <a class="btn btn-primary btn-hover-dark" href="#"><i
-                                                    class="fa fa-edit"></i>
-                                                Edit Address</a>
+                                            <a class="btn btn-primary btn-hover-dark" href="#" id="edit-address-btn"><i
+                                                    class="fa fa-edit"></i> Edit Address</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- Button to trigger add new address modal -->
+                            <!-- Button to trigger add new address modal -->
+                            <a href="/Address" class="btn btn-success" id="add-new-address-btn"><i
+                                    class="fa fa-plus"></i> Add New Address</a>
+
                         </div>
+
+
+
+
 
                         <div class="tab-pane fade" id="pills-account">
                             <div class="my-account-details account-wrapper">
@@ -643,40 +653,51 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="single-form">
-                                                <h5 class="title" style="font-weight: bolder;">
-                                                    Password change
-                                                </h5>
+                                                <button type="button" class="btn btn-secondary btn-hover-dark"
+                                                    onclick="showPasswordChangeFields()">
+                                                    Change Password
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="password-change-section" style="display: none;">
+                                            <div class="col-md-12">
+                                                <div class="single-form">
+                                                    <label for="curPassword">Current Password</label>
+                                                    <% if (typeof message !=='undefined' ) { %>
+                                                        <p class="text-danger">
+                                                            <%= message %>
+                                                        </p>
+                                                        <% } %>
+                                                            <div class="password-input">
+                                                                <input type="password" id="current-password"
+                                                                    placeholder="Current Password"
+                                                                    name="currentPassword" />
+                                                                <i class="fas fa-eye toggle-password"
+                                                                    onclick="togglePasswordVisibility('current-password')"></i>
+                                                            </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form">
+                                                    <input type="password" id="new-password" placeholder="New Password"
+                                                        name="newPassword" />
+                                                    <i class="fas fa-eye toggle-password"
+                                                        onclick="togglePasswordVisibility('new-password')"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form">
+                                                    <input type="password" id="confirm-password"
+                                                        placeholder="Confirm Password" name="confirmPassword" />
+                                                    <i class="fas fa-eye toggle-password"
+                                                        onclick="togglePasswordVisibility('confirm-password')"></i>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="single-form">
-                                                <label for="curPassword">Current Password</label>
-                                                <% if (typeof message !== 'undefined') { %>
-                                                    <p class="text-danger"><%= message %></p>
-                                                <% } %>
-                                                <div class="password-input">
-                                                    <input type="password" id="current-password" placeholder="Current Password" name="currentPassword" required />
-                                                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('current-password')"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="single-form">
-                                                <input type="password" id="new-password" placeholder="New Password" name="newPassword" required />
-                                                <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('new-password')"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="single-form">
-                                                <input type="password" id="confirm-password" placeholder="Confirm Password" name="confirmPassword" required />
-                                                <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('confirm-password')"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="single-form">
-                                                <button type="submit" class="btn btn-primary btn-hover-dark">
-                                                    Save Change
-                                                </button>
+                                                <button class="btn btn-primary btn-hover-dark" type="submit">Save
+                                                    Changes</button>
                                             </div>
                                         </div>
                                     </div>
@@ -690,6 +711,8 @@
         </div>
     </div>
     <!-- My Account Section End -->
+
+
 
     <!-- Footer Section Start -->
     <div class="section footer-section">
@@ -872,9 +895,11 @@
         const formData = new FormData();
         formData.append('name', name);
         formData.append('mobile', mobile);
-        formData.append('curPassword', curPassword);
-        formData.append('newPassword', newPassword);
-        formData.append('confirmPassword', confirmPassword);
+        if (curPassword && newPassword && confirmPassword) {
+            formData.append('curPassword', curPassword);
+            formData.append('newPassword', newPassword);
+            formData.append('confirmPassword', confirmPassword);
+        }
 
         axios.post('/detailsChange', formData, {
             headers: {
@@ -913,14 +938,16 @@
             return false;
         }
 
-        if (newPassword && !passwordPattern.test(newPassword)) {
-            Swal.fire('Weak password', 'New Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.', 'warning');
-            return false;
-        }
+        if (newPassword || confirmPassword) {
+            if (!passwordPattern.test(newPassword)) {
+                Swal.fire('Weak password', 'New Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.', 'warning');
+                return false;
+            }
 
-        if (newPassword !== confirmPassword) {
-            Swal.fire('Password mismatch', 'New Password and Confirm Password do not match.', 'warning');
-            return false;
+            if (newPassword !== confirmPassword) {
+                Swal.fire('Password mismatch', 'New Password and Confirm Password do not match.', 'warning');
+                return false;
+            }
         }
 
         return true;
@@ -939,7 +966,82 @@
             icon.classList.add("fa-eye");
         }
     }
+
+    function showPasswordChangeFields() {
+        document.getElementById('password-change-section').style.display = 'block';
+    }
+
 </script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Show modal when Add New Address button is clicked
+        document.getElementById('add-new-address-btn').addEventListener('click', function () {
+            document.getElementById('addAddressModal').classList.add('show'); // or use your preferred method to display the modal
+        });
+
+        // Handle close button click in modal
+        document.getElementById('addAddressModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('addAddressForm').reset();
+        });
+
+        // Handle save button click in modal
+        document.getElementById('saveAddressBtn').addEventListener('click', function () {
+
+            // console.log("hai")
+            // Prepare data to send to backend
+            var formData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('newAddress').value,
+                mobile: document.getElementById('mobile').value,
+                pincode: document.getElementById('pincode').value,
+                state: document.getElementById('state').value,
+                city: document.getElementById('city').value
+            };
+
+            // Send data to backend route 'addAddress' (replace with actual URL)
+            fetch('/addAddress', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+                .then(response => {
+                    // if (!response.ok) {
+                    //     throw new Error('Network response was not ok');
+                    // }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle success response from backend
+                    console.log('Address added successfully:', data);
+                    // Close the modal
+                    document.getElementById('addAddressModal').classList.remove('show'); // or use your preferred method to hide the modal
+                    // Optionally, update UI or show a success message
+                    alert('Address added successfully!');
+                })
+                .catch(error => {
+                    // Handle error response or network error
+                    console.error('Error adding address:', error);
+                    // Optionally, show an error message
+                    alert('Failed to add address. Please try again.');
+                });
+        });
+
+        // Handle edit address button click (dummy action for demonstration)
+        document.getElementById('edit-address-btn').addEventListener('click', function () {
+            // Replace with actual edit functionality
+            alert('Edit address functionality would go here');
+        });
+    });
+</script>
+
+
+
+
 
 <!-- Mirrored from htmldemo.net/furbar-1/furbar/my-account.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 14 Dec 2023 16:16:18 GMT -->
 

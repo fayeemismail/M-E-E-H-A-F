@@ -76,6 +76,11 @@ user_route.post('/sortItem', productCantroller.sortProduct)
 
 user_route.post('/detailsChange', userController.detailsChange)
 
+user_route.get('/fpResendOtp', otpController.fpResendOtp);
+
+user_route.get('/Address', userAuth.is_login ,userController.showAddress);
+
+user_route.post('/addAddress', userController.addAddress)
 
 
 

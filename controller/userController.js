@@ -4,6 +4,9 @@ const OTP = require('../models/otpModel');
 const bcrypt = require('bcrypt');
 const products = require('../models/productModel');
 const category = require('../models/categoryModel')
+const Address = require('../models/addressModel');
+
+
 
 
 
@@ -215,6 +218,11 @@ const fpLink = async (req,res) => {
         req.session.email = email
         const userData = await user.findOne({email:email});
         if(userData){
+            const existingOtp = await OTP.findOne({email:email})
+            if(existingOtp){
+                await OTP.deleteOne({email:email});
+                console.log('deleting the existing otp in 221 usercontroller')
+            }
             const otp = sendOtp.sendOtp(email);
             const Data = new OTP({
                 email:email,
@@ -238,12 +246,12 @@ const fpverify = async (req,res) => {
         const {otp} = req.body;
         const email = req.session.email;
         const OTPData = await OTP.findOne({email:email});
-        console.log(OTPData)
         if(OTPData && OTPData.otp == parseInt(otp)){
             console.log('USER REGISTERED SUCCESSFULLY');
             res.render('changePassword')
         }else{
-            console.log('USER VERIFICATION FAILED')
+            console.log('USER VERIFICATION FAILED');
+            res.render('fpOTP', {message:'OTP is invalid'})
         }
     } catch (error) {
         console.log(error)
@@ -314,12 +322,12 @@ const detailsChange = async (req, res) => {
             return res.json({ success: false, message: 'User not found' });
         }
 
-        const checkPass = await bcrypt.compare(curPassword, userData.password);
-        if (!checkPass) {
-            return res.json({ success: false, message: 'The Current Password is not matching. Try again' });
-        }
+        if (curPassword && newPassword) {
+            const checkPass = await bcrypt.compare(curPassword, userData.password);
+            if (!checkPass) {
+                return res.json({ success: false, message: 'The Current Password is not matching. Try again' });
+            }
 
-        if (newPassword) {
             const hashedPassword = await bcrypt.hash(newPassword, 10);
             userData.password = hashedPassword;
         }
@@ -335,6 +343,71 @@ const detailsChange = async (req, res) => {
         return res.json({ success: false, message: 'An error occurred. Please try again.' });
     }
 };
+
+
+const showAddress = async (req,res) => {
+    try {
+       res.render('addAddress')
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+const addAddress = async (req, res) => {
+    try {
+        const { name, email, mobile, address, pincode, city, state } = req.body;
+        const userId = req.session.user_id;
+
+        // Validations
+        if (!name || name.trim() === '' || name.length <= 3 || !/^[a-zA-Z\s]+$/.test(name)) {
+            return res.json({ success: false, message: "The Name should contain at least 3 letters and no numbers." });
+        }
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+            return res.json({ success: false, message: "Invalid email format." });
+        }
+        if (!mobile || !/^\d{10}$/.test(mobile)) {
+            return res.json({ success: false, message: "Mobile number should be exactly 10 digits." });
+        }
+        if (!pincode || !/^\d{6}$/.test(pincode)) {
+            return res.json({ success: false, message: "Pincode should be exactly 6 digits." });
+        }
+        if (!city || city.trim() === '' || !/^[a-zA-Z\s]+$/.test(city)) {
+            return res.json({ success: false, message: "City should only contain letters and spaces." });
+        }
+        if (!state || state.trim() === '' || !/^[a-zA-Z\s]+$/.test(state)) {
+            return res.json({ success: false, message: "State should only contain letters and spaces." });
+        }
+        if (!address || address.trim() === '') {
+            return res.json({ success: false, message: "Address cannot be empty." });
+        }
+
+        // Create and save a new address instance
+        const newAddress = {
+            name,
+            email,
+            mobile,
+            address,
+            city,
+            pincode,
+            state
+        };
+
+        const addressDoc = await Address.findOneAndUpdate(
+            { user_id: userId },
+            { $push: { address: newAddress } },
+            { new: true, upsert: true }
+        );
+
+        res.json({ success: true, address: addressDoc });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "An error occurred." });
+    }
+};
+
+
 
 
 
@@ -357,6 +430,8 @@ module.exports = {
     fpverify,
     newPassword,
     detailsChange,
+    showAddress,
+    addAddress
 
 };
 

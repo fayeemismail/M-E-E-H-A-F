@@ -20,10 +20,22 @@ const addProducts = async (req, res) => {
     try {
         const { name, description, price, stock, image, category } = req.body;
         console.log(req.body)
+        
         // Check if name is valid
-        if (!name || name.trim().length <= 3) {
+        if (!name || name.trim().length < 3) {
             return res.render('newProducts', { message: 'The name should contain at least 3 letters' });
         }
+        
+        // Check if price is valid
+        if (!price || price <= 0) {
+            return res.render('newProducts', { message: 'The price must be greater than 0' });
+        }
+
+        // Check if stock is valid
+        if (stock < 0) {
+            return res.render('newProducts', { message: 'The stock must be 0 or greater' });
+        }
+        
         // Check if product with the same name already exists
         const existingProduct = await products.findOne({ name: name });
         if (existingProduct) {
@@ -40,7 +52,7 @@ const addProducts = async (req, res) => {
             image: imagePath,
             category: category
         });
-        // console.log(category)
+
         // Save new product
         const saving = await newProduct.save();
         if (saving) {

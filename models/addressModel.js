@@ -18,10 +18,6 @@ const addressSchame = mongoose.Schema({
             type:Number,
             required:true
         },
-        locality:{
-            type:String,
-            required:true
-        },
         address:{
             type:String,
             required:true
@@ -30,7 +26,7 @@ const addressSchame = mongoose.Schema({
             type:String,
             required:true
         },
-        pin:{
+        pincode:{
             type:Number,
             required:true
         },
