@@ -18,54 +18,51 @@ const newProducts = async (req, res) => {
 
 const addProducts = async (req, res) => {
     try {
-        const { name, description, price, stock, image, category } = req.body;
-        console.log(req.body)
-        
-        // Check if name is valid
+        const { name, description, price, stock, category } = req.body;
+        console.log(req.body);
+
+        // Validate name
         if (!name || name.trim().length < 3) {
             return res.render('newProducts', { message: 'The name should contain at least 3 letters' });
         }
         
-        // Check if price is valid
+        // Validate price
         if (!price || price <= 0) {
             return res.render('newProducts', { message: 'The price must be greater than 0' });
         }
 
-        // Check if stock is valid
+        // Validate stock
         if (stock < 0) {
             return res.render('newProducts', { message: 'The stock must be 0 or greater' });
         }
         
-        // Check if product with the same name already exists
-        const existingProduct = await products.findOne({ name: name });
+        // Check for existing product
+        const existingProduct = await products.findOne({ name });
         if (existingProduct) {
             return res.render('newProducts', { message: 'A product with the same name already exists' });
         }
 
-        const imagePath = req.files.map(file => `${file.filename}`)
+        const imagePath = req.files.map(file => file.filename);
+        
         // Create new product
         const newProduct = new products({
-            name: name,
-            description: description,
-            price: price,
-            stock: stock,
+            name,
+            description,
+            price,
+            stock,
             image: imagePath,
-            category: category
+            category
         });
 
         // Save new product
-        const saving = await newProduct.save();
-        if (saving) {
-            console.log('Product saved successfully');
-            // Send success response
-            res.send({ success: 1 })
-        }
+        await newProduct.save();
+        res.send({ success: 1 });
     } catch (error) {
         console.error('Error saving product:', error);
-        // Handle error, maybe render an error page
-        return res.status(500).render('error', { message: 'Internal server error' });
+        res.status(500).render('error', { message: 'Internal server error' });
     }
 };
+
 
 
 
@@ -187,11 +184,30 @@ const sortProduct = async (req,res)=> {
 
 
 
+const checkStock = async (req,res) => {
+    try {
+        const productId = req.body.productId;
+        const product = await products.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        res.json({ stock: product.stock });        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
 module.exports = {
     newProducts,
     addProducts,
     editProducts,
     updateProducts,
     productBlock,
-    sortProduct
+    sortProduct,
+    checkStock,
+    
 }

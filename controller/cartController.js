@@ -6,9 +6,7 @@ const showCart = async (req,res) => {
         const userData = req.session.user_id
         const cartData = await cart.findOne({user:userData}).populate('Products.Product');
         if(cartData){
-            cartData.Products.map(item => {
-                console.log(item.Product);
-            })
+            
         }
     res.render('cart', {cartData:cartData})        
     } catch (error) {
@@ -16,43 +14,40 @@ const showCart = async (req,res) => {
     }
 }
 
-const checkCart = async (req,res) => {
-
+const checkCart = async (req, res) => {
     try {
-        const {productId} = req.body
-        const cartData = await cart.findOne({user:req.session.user_id});
-        if(!cartData){
+        const { productId } = req.body;
+        const cartData = await cart.findOne({ user: req.session.user_id });
+
+        if (!cartData) {
             const addToCart = new cart({
-                user:req.session.user_id,
-                Products:[{
-                    Product:productId,
-                    quantity:1
+                user: req.session.user_id,
+                Products: [{
+                    Product: productId,
+                    quantity: 1
                 }]
-            }) 
-            await addToCart.save()
-        }else{
-            const exist =  cartData.Products.find(item => {
+            });
+            await addToCart.save();
+            res.status(200).json({ success: 'The product has been added to the cart' });
+        } else {
+            const exist = cartData.Products.find(item => {
                 return item.Product == productId;
-            })
-            if(exist){
-                res.status(200).json({fail:'The product is already in the cart'});
-            }else{
-                cartData.Products.push({Product:productId,quantity:1})
-            const saving =  await  cartData.save()
-            if (saving){
-                res.status(200).json({success:'The product has been added to the cart'});
-
+            });
+            if (exist) {
+                res.status(200).json({ fail: 'The product is already in the cart' });
+            } else {
+                cartData.Products.push({ Product: productId, quantity: 1 });
+                const saving = await cartData.save();
+                if (saving) {
+                    res.status(200).json({ success: 'The product has been added to the cart' });
+                }
             }
-            }
-
         }
-        
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).json({ error: 'Server error' });
     }
-
 }
-
 
 const addCart = async (req,res) => {
 
@@ -128,6 +123,76 @@ const removeCart = async (req, res) => {
 
 
 
+const increament = async (req,res) => {
+    try {
+        const {productId , stock} = req.body;
+        const userId = req.session.user_id;
+        
+        const findProductCart = await cart.findOne({user: userId});
+        
+
+        const product = await Products.findOne({_id:productId});
+        if(!product){
+            console.log('product is not in the cart')
+        }
+
+        if(product.stock < stock){
+            return res.send({error:1})
+        }
+
+        const stockCheck = findProductCart.Products.forEach(item => {
+            if(item.Product == productId ){
+                if(stock <= product.stock ){
+                    item.quantity = stock
+                }else{
+                    return stock = product.stock
+                }
+            }
+        });
+
+        const saveIncrQuantity = await findProductCart.save();
+        if(saveIncrQuantity){
+            const total = stock * product.price 
+            return res.send({stock : stock, total:total})
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+
+const decrement = async (req,res) => {
+    try {
+        let {productId, stock} = req.body;
+        const userId = req.session.user_id;
+
+        const findProductCart = await cart.findOne({user:userId});
+
+        const product = await Products.findOne({_id: productId});
+
+        findProductCart.Products.forEach(item => {
+            if(item.Product == productId){
+                if(stock <= product.stock){
+                    item.stock = stock
+                }else{
+                    return stock = item.stock
+                }
+            }
+        })
+
+        const saveDecrQuantity = await findProductCart.save();
+        if(saveDecrQuantity){
+            const total = stock * product.price
+            return res.send({stock:stock, total:total})
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 
 module.exports = {
@@ -135,5 +200,7 @@ module.exports = {
     addCart,
     showCart,
     removeCart,
+    increament,
+    decrement
 
 }

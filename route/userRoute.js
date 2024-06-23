@@ -33,56 +33,79 @@ const cartController = require('../controller/cartController')
 const userAuth = require('../middlewares/userAuth');
 const { productBlock } = require('../controller/productCantroller');
 
+
+
 //ROUTE FOR HOME PAGE
 user_route.get('/' , userController.home);
-//ROUTE FOR LOGIN PAGE
-user_route.get('/login', userAuth.is_logout ,userController.login)
-//ROUTE FOT SHOP PAGE
-user_route.get('/shop' , userAuth.is_login , userController.shop);
-//ROUTE FOR REGISTER PAGE
+
+
+//ROUTE FOR LOGIN PAGE LOGOUT PAGE ADDING USER OTP PAGE AUTHENTICATING USER VERIFY OTP
+user_route.get('/login', userAuth.is_logout ,userController.login);
 user_route.get('/register', userAuth.is_logout ,userController.register);
-//ROUTE FOR ADD USER PAGE
 user_route.post('/login_post', userAuth.is_logout ,userController.addUser);
-//ROUTE FOR VERIFY OTP
 user_route.post('/verifyOtp' , userAuth.is_logout ,userController.verifyOtp);
-
 user_route.post('/authUser', userAuth.is_logout ,userController.authUser);
-
 user_route.get('/resendOtp' ,otpController.resendOtp);
-
 user_route.get('/logout' ,userController.logout);
 
-user_route.get('/forgotPass', userController.forgotPass);
 
+
+//ROUTE FOT SHOP PAGE
+user_route.get('/shop' , userAuth.is_login , userController.shop);
+
+
+
+
+//ROUTE FOR FORGOT PASSWORD
+user_route.get('/forgotPass', userController.forgotPass);
 user_route.post('/fpasswordOTP', userController.fpLink);
+user_route.post('/fpOTP', userController.fpverify)
+user_route.get('/fpResendOtp', otpController.fpResendOtp);
+user_route.post('/newPassword', userController.newPassword);
+
+
 
 user_route.get('/singleProduct', userAuth.is_login , userController.singleProduct);
 
 user_route.get('/userProfile', userAuth.is_login , userController.userProfile);
 
-user_route.post('/fpOTP', userController.fpverify)
 
-user_route.post('/newPassword', userController.newPassword);
 
+
+
+
+// ROUTE FOR SHOW CART CHECK CART ADD AND REMOVE 
 user_route.get('/cart',  userAuth.is_login , cartController.showCart);
-
 user_route.post('/checkCart', userAuth.is_login  , cartController.checkCart)
-
 user_route.post('/addCart', cartController.addCart);
-
 user_route.post('/removeCart', cartController.removeCart);
+
+
+
 
 user_route.post('/sortItem', productCantroller.sortProduct)
 
+
+
+
+
+// ROUTE FOR ADD ADDRESS EDIT AND UPDATE
+user_route.get('/Address', userAuth.is_login ,userController.showAddress);
+user_route.post('/addAddress', userController.addAddress);
+user_route.get('/editAddress', userAuth.is_login, userController.editAddress);
+user_route.post('/updateAddress', userAuth.is_login, userController.updateAddress);
 user_route.post('/detailsChange', userController.detailsChange)
 
-user_route.get('/fpResendOtp', otpController.fpResendOtp);
-
-user_route.get('/Address', userAuth.is_login ,userController.showAddress);
-
-user_route.post('/addAddress', userController.addAddress)
 
 
+user_route.post('/checkStock', productCantroller.checkStock);
+
+user_route.post('/removeAddress', userController.removeAddress);
+
+
+user_route.post('/increament', cartController.increament);
+
+user_route.post('/decrement', cartController.decrement)
 
 
 

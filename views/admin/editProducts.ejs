@@ -211,7 +211,7 @@
             <%- include('../partials/adminFooter') %>
 
 
-               
+
                 <div id="cropperModal" class="modal">
                     <div class="modal-content">
                         <div class="cropper-container">
@@ -332,4 +332,41 @@
                                 console.log(error);
                             });
                     }
+
+
+
+                    // VALIDATING THE PRICE AND STOCK 
+                    document.getElementById('product_price').addEventListener('input', validatePriceInput);
+                    document.getElementById('product_stock').addEventListener('input', validateStockInput);
+
+                    function validatePriceInput(event) {
+                        const input = event.target;
+                        let value = input.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+
+                        if (value.length > 0) {
+                            value = parseInt(value); // Convert to integer
+
+                            if (value <= 0) {
+                                value = ''; // If the value is non-positive, clear it
+                            }
+                        }
+
+                        input.value = value.toString(); // Update input value
+                    }
+
+                    function validateStockInput(event) {
+                        const input = event.target;
+                        input.value = input.value.replace(/[^0-9]/g, '');
+                        if (input.value.length === 0) {
+                            input.value = '0';
+                        }
+                    }
+
+
+                    document.getElementById('product_form').addEventListener('submit', function (event) {
+                        event.preventDefault();
+                        if (validateForm()) {
+                            product_details();
+                        }
+                    });
                 </script>

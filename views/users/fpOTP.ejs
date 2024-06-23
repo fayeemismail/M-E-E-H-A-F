@@ -65,6 +65,7 @@
                                         <input type="text" class="otp-input" maxlength="1" id="otp3" name="otp3" required>
                                         <input type="text" class="otp-input" maxlength="1" id="otp4" name="otp4" required>
                                     </div>
+                                    <div class="timer" id="timer">Time remaining: 120 seconds</div>
                                     <input type="hidden" id="otp" name="otp">
                                 </div>
                                 <div class="form-group">
@@ -122,6 +123,25 @@
                 }
             });
         });
+
+
+         // Timer for OTP resend
+      let timeLeft = 120;
+      const timerElement = document.getElementById('timer');
+      const resendOtpLink = document.getElementById('resendOtpLink');
+      const resendOtpLink2 = document.getElementById('resendOtpLink2');
+      
+      const timer = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          timerElement.textContent = "You can now resend the OTP.";
+          resendOtpLink.classList.remove('disabled');
+          resendOtpLink2.classList.remove('disabled');
+        } else {
+          timerElement.textContent = `Time remaining: ${timeLeft} seconds`;
+          timeLeft--;
+        }
+      }, 1000);
     </script>
 </body>
 </html>

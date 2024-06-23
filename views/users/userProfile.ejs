@@ -586,35 +586,32 @@
                             </div>
                         </div>
 
+
+                        <!-- ADDRESS DETAILS -->
                         <div class="tab-pane fade" id="pills-address">
                             <div class="my-account-address account-wrapper">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="account-address">
-                                            <h4 class="account-title">
-                                                Billing address
-                                            </h4>
-                                            <h6 class="name">
-                                                Alex Tuntuni
-                                            </h6>
-                                            <p>
-                                                1355 Market St, Suite 900
-                                                <br />
-                                                San Francisco, CA 94103
-                                            </p>
-                                            <p>Mobile: (123) 456-7890</p>
-                                            <a class="btn btn-primary btn-hover-dark" href="#" id="edit-address-btn"><i
-                                                    class="fa fa-edit"></i> Edit Address</a>
-                                        </div>
+                                        <% addresses.forEach(details => { %>
+                                            <div class="account-address" id="address-<%= details._id %>">
+                                                <h4 class="account-title">Billing address</h4>
+                                                <h6 class="name"><%= details.name %></h6>
+                                                <p><%= details.address %><br /><%= details.city %>, <%= details.state %> <%= details.pincode %></p>
+                                                <p>Mobile: <%= details.mobile %></p>
+                                                <a class="btn btn-primary btn-hover-dark" href="/editAddress?id=<%= details._id %>" id="edit-address-btn"><i class="fa fa-edit"></i> Edit Address</a>
+                                                <a class="btn btn-danger btn-hover-dark" onclick="removeAddress('<%= details._id %>')" id="delete-address-btn"><i class="fa fa-trash"></i>Delete Address</a>
+                                            </div>
+                                        <% }) %>
                                     </div>
                                 </div>
                             </div>
+                            <hr>
                             <!-- Button to trigger add new address modal -->
-                            <!-- Button to trigger add new address modal -->
-                            <a href="/Address" class="btn btn-success" id="add-new-address-btn"><i
-                                    class="fa fa-plus"></i> Add New Address</a>
-
+                            <a href="/Address" class="btn btn-success" id="add-new-address-btn">
+                                <i class="fa fa-plus"></i> Add New Address
+                            </a>
                         </div>
+                        
 
 
 
@@ -1037,6 +1034,53 @@
             alert('Edit address functionality would go here');
         });
     });
+
+
+
+    //DELETE ADDRESS
+    function removeAddress(detailsId) {
+    // Show SweetAlert confirmation dialog
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to delete this address. This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // User confirmed, proceed with delete
+            fetch('/removeAddress', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ detailsId: detailsId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the address element from the DOM
+                    const addressElement = document.getElementById(`address-${detailsId}`);
+                    if (addressElement) {
+                        addressElement.remove();
+                        // Show success message if needed
+                        Swal.fire('Deleted!', 'The address has been deleted.', 'success');
+                    } else {
+                        Swal.fire('Error!', 'Failed to find address element.', 'error');
+                    }
+                } else {
+                    Swal.fire('Error!', 'Failed to delete address.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error!', 'An error occurred while deleting the address.', 'error');
+            });
+        }
+    });
+}
 </script>
 
 

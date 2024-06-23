@@ -26,6 +26,9 @@
                             </div>
                             <form  method="post" action="/fpasswordOTP" class="signin-form">
                                 <div class="form-group mb-3">
+                                    <% if (typeof message !== 'undefined') { %>
+                                        <p class="text-danger"><%= message %></p>
+                                    <% } %>
                                     <label class="label" for="email">User Email</label>
                                     <input type="email" class="form-control" placeholder="User email" id="userEmail" name="email" required>
                                 </div>

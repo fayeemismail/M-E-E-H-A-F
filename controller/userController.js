@@ -217,6 +217,9 @@ const fpLink = async (req,res) => {
         const {email} = req.body;
         req.session.email = email
         const userData = await user.findOne({email:email});
+        if(!userData){
+            res.render('forgotPass', {message:`You don't have an Account register first`});
+        }
         if(userData){
             const existingOtp = await OTP.findOne({email:email})
             if(existingOtp){
@@ -290,6 +293,7 @@ const singleProduct = async (req,res) => {
 
         const findItem = await products.findById({_id:productData});
         const cateItem = await products.find({category:findItem.category});
+       
         
         
 
@@ -300,17 +304,22 @@ const singleProduct = async (req,res) => {
 
 }
 
-const userProfile = async (req,res) => {
-      
+const userProfile = async (req, res) => {
     try {
         const userId = req.session.user_id;
-        const userData = await user.findOne({_id:userId});
-        res.render('userProfile', {userData:userData})
-    } catch (error) {
-        console.log(error)
-    }
+        const userData = await user.findOne({ _id: userId });
+        const userAddress = await Address.findOne({ user_id: userId });
 
-}
+        const addresses = userAddress && userAddress.address ? userAddress.address : [];
+
+        res.render('userProfile', { userData: userData, addresses: addresses });
+    } catch (error) {
+        console.log(error);
+        res.render('error', { message: "An error occurred while fetching the user profile." });
+    }
+};
+
+
 
 const detailsChange = async (req, res) => {
     try {
@@ -407,8 +416,114 @@ const addAddress = async (req, res) => {
     }
 };
 
+const editAddress = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const addressId = req.query.id; // Correct query parameter name
+
+        if (!userId || !addressId) {
+            return res.status(400).send('User ID or Address ID is missing.');
+        }
+
+        const userAddress = await Address.findOne(
+            { user_id: userId, 'address._id': addressId },
+            { 'address.$': 1 }
+        );
+
+        if (!userAddress) {
+            return res.status(404).send('Address not found.');
+        }
+
+        res.render('editAddress', { address: userAddress.address[0] });
+    } catch (error) {
+        console.log('Error fetching address:', error);
+        res.status(500).send('Server Error');
+    }
+};
 
 
+const updateAddress = async (req, res) => {
+    try {
+        const { id, name, email, mobile, address, city, pincode, state } = req.body;
+
+        if (!req.session.user_id) {
+            return res.status(400).json({ success: false, message: 'User is not authenticated.' });
+        }
+
+        // Validations
+        if (!name || name.trim() === '' || name.length <= 3 || !/^[a-zA-Z\s]+$/.test(name)) {
+            return res.json({ success: false, message: "The Name should contain at least 3 letters and no numbers." });
+        }
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+            return res.json({ success: false, message: "Invalid email format." });
+        }
+        if (!mobile || !/^\d{10}$/.test(mobile)) {
+            return res.json({ success: false, message: "Mobile number should be exactly 10 digits." });
+        }
+        if (!pincode || !/^\d{6}$/.test(pincode)) {
+            return res.json({ success: false, message: "Pincode should be exactly 6 digits." });
+        }
+        if (!city || city.trim() === '' || !/^[a-zA-Z\s]+$/.test(city)) {
+            return res.json({ success: false, message: "City should only contain letters and spaces." });
+        }
+        if (!state || state.trim() === '' || !/^[a-zA-Z\s]+$/.test(state)) {
+            return res.json({ success: false, message: "State should only contain letters and spaces." });
+        }
+        if (!address || address.trim() === '') {
+            return res.json({ success: false, message: "Address cannot be empty." });
+        }
+
+        // Log the incoming data for debugging
+        console.log('Incoming data:', { id, name, email, mobile, address, city, pincode, state });
+        console.log('User ID from session:', req.session.user_id);
+
+        // Update the address
+        const updatedAddress = await Address.findOneAndUpdate(
+            { _id: req.session.user_id, 'address._id': id },
+            {
+                $set: {
+                    'address.$.name': name,
+                    'address.$.email': email,
+                    'address.$.mobile': mobile,
+                    'address.$.address': address,
+                    'address.$.city': city,
+                    'address.$.pincode': pincode,
+                    'address.$.state': state
+                }
+            },
+            { new: true }
+        );
+
+        // Log the update result for debugging
+        console.log('Updated address:', updatedAddress);
+
+        if (!updatedAddress) {
+            return res.status(404).json({ success: false, message: 'Address not found.' });
+        }
+
+        res.json({ success: true, address: updatedAddress });
+    } catch (error) {
+        console.log('Error updating address:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+
+
+const removeAddress = async (req,res) => {
+    try {
+        const { user_id } = req.session
+
+        const { detailsId } = req.body;
+        console.log(detailsId)
+        const saving = await Address.findOneAndUpdate({'address._id': detailsId}, {$pull:{address:{_id: detailsId}}});
+        await saving.save()
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting address:', error);
+        res.json({ success: false });
+    }
+}
 
 
 
@@ -431,7 +546,10 @@ module.exports = {
     newPassword,
     detailsChange,
     showAddress,
-    addAddress
+    addAddress,
+    editAddress,
+    updateAddress,
+    removeAddress
 
 };
 
