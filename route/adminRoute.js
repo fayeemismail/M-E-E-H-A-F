@@ -57,5 +57,8 @@ admin_route.post('/productBlock', productController.productBlock)
 
 
 
+admin_route.get('/order', adminController.order)
+
+
 
 module.exports = admin_route;

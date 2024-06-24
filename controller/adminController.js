@@ -1,6 +1,7 @@
 const user = require('../models/userModel');
 const category = require('../models/categoryModel');
-const products = require('../models/productModel')
+const products = require('../models/productModel');
+const orderSchema = require('../models/orderModel');
 require('dotenv').config();
 
 
@@ -35,6 +36,18 @@ const product = async (req, res) => {
         const filteredProdcts = allProducts.filter(product => !falseCategoryName.includes(product.category));
         res.render('product', {item:filteredProdcts});
 
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+const order = async (req,res) => {
+    try {
+
+        const orderList = await orderSchema.find();
+        res.render('order', {orderList:orderList})
     } catch (error) {
         console.log(error)
     }
@@ -119,6 +132,6 @@ module.exports = {
     usersList,
     adminVeify,
     userBlock,
-
+    order
 
 }

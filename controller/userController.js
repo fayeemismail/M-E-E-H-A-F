@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const products = require('../models/productModel');
 const category = require('../models/categoryModel')
 const Address = require('../models/addressModel');
+const orderSchema = require('../models/orderModel')
 
 
 
@@ -310,9 +311,11 @@ const userProfile = async (req, res) => {
         const userData = await user.findOne({ _id: userId });
         const userAddress = await Address.findOne({ user_id: userId });
 
+        const orderList = await orderSchema.find();
+
         const addresses = userAddress && userAddress.address ? userAddress.address : [];
 
-        res.render('userProfile', { userData: userData, addresses: addresses });
+        res.render('userProfile', { userData: userData, addresses: addresses, orderList:orderList });
     } catch (error) {
         console.log(error);
         res.render('error', { message: "An error occurred while fetching the user profile." });
