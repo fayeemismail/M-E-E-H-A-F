@@ -108,7 +108,11 @@ const addUser = async (req, res) => {
                 otp: otp,
             });
 
+            const existingData = await OTP.findOneAndDelete({email:email})
+
+
             await data.save();
+            
             
 
             res.render('otp');

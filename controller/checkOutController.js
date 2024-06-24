@@ -38,7 +38,7 @@ const placeOrder = async (req,res) => {
             price: val.Product.price
         }))
 
-        console.log(productDetails)
+        console.log(productDetails,'details of product')
        const totalAmount = productDetails.reduce((accu, val)=> {
             return accu + val.quantity * val.price
        },0);
@@ -64,7 +64,8 @@ const placeOrder = async (req,res) => {
        const saving = await newOrder.save();
 
        if(saving){
-        console.log('order saved')
+        console.log('order saved');
+        const decreasequantity = 
         res.send({success:1});
         
        }
