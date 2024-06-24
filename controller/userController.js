@@ -373,9 +373,6 @@ const addAddress = async (req, res) => {
         if (!name || name.trim() === '' || name.length <= 3 || !/^[a-zA-Z\s]+$/.test(name)) {
             return res.json({ success: false, message: "The Name should contain at least 3 letters and no numbers." });
         }
-        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-            return res.json({ success: false, message: "Invalid email format." });
-        }
         if (!mobile || !/^\d{10}$/.test(mobile)) {
             return res.json({ success: false, message: "Mobile number should be exactly 10 digits." });
         }
@@ -395,7 +392,6 @@ const addAddress = async (req, res) => {
         // Create and save a new address instance
         const newAddress = {
             name,
-            email,
             mobile,
             address,
             city,
@@ -454,9 +450,7 @@ const updateAddress = async (req, res) => {
         if (!name || name.trim() === '' || name.length <= 3 || !/^[a-zA-Z\s]+$/.test(name)) {
             return res.json({ success: false, message: "The Name should contain at least 3 letters and no numbers." });
         }
-        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-            return res.json({ success: false, message: "Invalid email format." });
-        }
+        
         if (!mobile || !/^\d{10}$/.test(mobile)) {
             return res.json({ success: false, message: "Mobile number should be exactly 10 digits." });
         }
@@ -483,7 +477,6 @@ const updateAddress = async (req, res) => {
             {
                 $set: {
                     'address.$.name': name,
-                    'address.$.email': email,
                     'address.$.mobile': mobile,
                     'address.$.address': address,
                     'address.$.city': city,

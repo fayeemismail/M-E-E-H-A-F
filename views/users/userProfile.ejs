@@ -591,8 +591,9 @@
                         <div class="tab-pane fade" id="pills-address">
                             <div class="my-account-address account-wrapper">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <% addresses.forEach(details => { %>
+                                    <% addresses.forEach(details => { %>
+                                    <div class="col-md-12">
+                                        
                                             <div class="account-address" id="address-<%= details._id %>">
                                                 <h4 class="account-title">Billing address</h4>
                                                 <h6 class="name"><%= details.name %></h6>
@@ -601,8 +602,9 @@
                                                 <a class="btn btn-primary btn-hover-dark" href="/editAddress?id=<%= details._id %>" id="edit-address-btn"><i class="fa fa-edit"></i> Edit Address</a>
                                                 <a class="btn btn-danger btn-hover-dark" onclick="removeAddress('<%= details._id %>')" id="delete-address-btn"><i class="fa fa-trash"></i>Delete Address</a>
                                             </div>
-                                        <% }) %>
+                                       
                                     </div>
+                                    <% }) %>
                                 </div>
                             </div>
                             <hr>

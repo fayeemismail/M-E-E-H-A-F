@@ -27,7 +27,8 @@ user_route.use(bodyParser.urlencoded({extended:true}));
 const userController = require('../controller/userController')
 const otpController = require('../controller/otpController');
 const productCantroller = require('../controller/productCantroller');
-const cartController = require('../controller/cartController')
+const cartController = require('../controller/cartController');
+const checkOutController = require('../controller/checkOutController');
 
 // REQUIRING AUTH MIDDELEWARE
 const userAuth = require('../middlewares/userAuth');
@@ -105,7 +106,14 @@ user_route.post('/removeAddress', userController.removeAddress);
 
 user_route.post('/increament', cartController.increament);
 
-user_route.post('/decrement', cartController.decrement)
+user_route.post('/decrement', cartController.decrement);
+
+user_route.post('/subTotalChange', cartController.subtotal);
+
+
+//ROUTE FOR CHECKOUT 
+user_route.get('/checkout', userAuth.is_login, checkOutController.checkOut);
+user_route.post('/placeOrder', userAuth.is_login, checkOutController.placeOrder)
 
 
 

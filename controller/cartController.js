@@ -14,6 +14,7 @@ const showCart = async (req,res) => {
     }
 }
 
+
 const checkCart = async (req, res) => {
     try {
         const { productId } = req.body;
@@ -139,6 +140,9 @@ const increament = async (req,res) => {
         if(product.stock < stock){
             return res.send({error:1})
         }
+        if(3 < stock){
+            return res.send({error:2})
+        }
 
         const stockCheck = findProductCart.Products.forEach(item => {
             if(item.Product == productId ){
@@ -176,9 +180,9 @@ const decrement = async (req,res) => {
         findProductCart.Products.forEach(item => {
             if(item.Product == productId){
                 if(stock <= product.stock){
-                    item.stock = stock
+                    item.quantity = stock
                 }else{
-                    return stock = item.stock
+                    return stock = item.quantity
                 }
             }
         })
@@ -195,12 +199,25 @@ const decrement = async (req,res) => {
 }
 
 
+const subtotal = async (req,res) => {
+    try {
+        const userId = req.session.user_id
+        const findCart = await cart.findOne({user:userId}).populate('Products.Product');
+        
+        res.send({productData:findCart.Products})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
 module.exports = {
     checkCart,
     addCart,
     showCart,
     removeCart,
     increament,
-    decrement
+    decrement,
+    subtotal
 
 }
