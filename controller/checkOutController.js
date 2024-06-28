@@ -65,7 +65,7 @@ const placeOrder = async (req,res) => {
 
        if(saving){
         console.log('order saved');
-        const decreasequantity = 
+        
         res.send({success:1});
         
        }

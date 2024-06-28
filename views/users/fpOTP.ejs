@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 <head>
     <title>OTP Verification</title>
     <meta charset="utf-8">
@@ -37,9 +36,26 @@
             display: flex;
             justify-content: center;
         }
+        
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .timer {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .disabled {
+            pointer-events: none;
+            color: gray;
+        }
     </style>
 </head>
-
 <body>
     <section class="ftco-section">
         <div class="container">
@@ -66,12 +82,13 @@
                                         <input type="text" class="otp-input" maxlength="1" id="otp4" name="otp4" required>
                                     </div>
                                     <div class="timer" id="timer">Time remaining: 120 seconds</div>
+                                    <div class="error-message" id="errorMessage"></div>
                                     <input type="hidden" id="otp" name="otp">
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" id="verifyOtpButton" class="form-control btn btn-primary rounded submit px-3">Verify OTP</button>
                                 </div>
-                                <p class="text-center">Didn't receive the code???????? <a href="/fpResendOtp" class="resend-otp " id="resendOtpLink2">Resend</a></p>
+                                <p class="text-center">Didn't receive the code? <a href="/fpResendOtp" class="resend-otp disabled" id="resendOtpLink2">Resend</a></p>
                             </form>
                             <p class="text-center"><a href="/login">Back to Login</a></p>
                         </div>
@@ -119,29 +136,38 @@
             document.getElementById('otpVerificationForm').addEventListener('submit', function (e) {
                 if (document.getElementById('otp').value.length !== inputs.length) {
                     e.preventDefault();
-                    alert('Please enter a valid 4-digit OTP.');
+                    const errorMessage = document.getElementById('errorMessage');
+                    errorMessage.textContent = 'Please enter a valid 4-digit OTP.';
+                    errorMessage.style.display = 'block';
+                }
+            });
+
+            // Timer for OTP resend
+            let timeLeft = 120;
+            const timerElement = document.getElementById('timer');
+            const resendOtpLink2 = document.getElementById('resendOtpLink2');
+
+            const timer = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timerElement.textContent = "You can now resend the OTP.";
+                    resendOtpLink2.classList.remove('disabled');
+                } else {
+                    timerElement.textContent = `Time remaining: ${timeLeft} seconds`;
+                    timeLeft--;
+                }
+            }, 1000);
+
+            // Prevent form submission if the timer has expired
+            document.getElementById('otpVerificationForm').addEventListener('submit', function (e) {
+                if (timeLeft <= 0) {
+                    e.preventDefault();
+                    const errorMessage = document.getElementById('errorMessage');
+                    errorMessage.textContent = 'The OTP has expired. Please click "Resend" to get a new OTP.';
+                    errorMessage.style.display = 'block';
                 }
             });
         });
-
-
-         // Timer for OTP resend
-      let timeLeft = 120;
-      const timerElement = document.getElementById('timer');
-      const resendOtpLink = document.getElementById('resendOtpLink');
-      const resendOtpLink2 = document.getElementById('resendOtpLink2');
-      
-      const timer = setInterval(() => {
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          timerElement.textContent = "You can now resend the OTP.";
-          resendOtpLink.classList.remove('disabled');
-          resendOtpLink2.classList.remove('disabled');
-        } else {
-          timerElement.textContent = `Time remaining: ${timeLeft} seconds`;
-          timeLeft--;
-        }
-      }, 1000);
     </script>
 </body>
 </html>

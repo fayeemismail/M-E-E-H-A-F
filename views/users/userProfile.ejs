@@ -497,11 +497,11 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% orderList.forEach(element => { %>
+                                            <% orderList.forEach((element, index) => { %>
                                              
                                            
                                             <tr>
-                                                <td>1</td>
+                                                <td><%= index + 1 %></td>
                                                 <td><%= element.billingAddress.userName %></td>
                                                 <td><%= element.createdAt.toLocaleDateString() %></td>
                                                 <td><%= element.orderStatus %></td>

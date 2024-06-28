@@ -4,7 +4,7 @@ const user_route = express();
 const session = require('express-session')
 
 user_route.use(session({
-    secret: 'yourSecretKey', // Replace with your own secret
+    secret: 'yourSecretKey', // Replace with my secret 
     resave: false,           // Forces the session to be saved back to the session store
     saveUninitialized: true, // Forces a session that is "uninitialized" to be saved to the store
   }))

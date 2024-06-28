@@ -112,7 +112,10 @@ const addUser = async (req, res) => {
 
 
             await data.save();
-            
+            setTimeout(async () => {
+                await OTP.deleteOne({email:data.email});
+                console.log('the otp is deleted after 120 sec')
+            },120000)
             
 
             res.render('otp');
@@ -132,7 +135,7 @@ const verifyOtp = async (req, res) => {
         const userData = req.session.userData;
         const OTPData = await OTP.findOne({ email: email });
 
-        if (OTPData &&  OTPData.otp === otpp) {
+        if (OTPData && OTPData.otp === otpp) {
             const newUser = new user(userData);
             await newUser.save();
             console.log('User registered successfully');
@@ -143,8 +146,10 @@ const verifyOtp = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
+        res.render('otp', { message: 'An error occurred. Please try again later.' });
     }
 };
+
 
 
 const authUser = async (req, res) => {
@@ -185,22 +190,24 @@ const authUser = async (req, res) => {
 
 
 
-const logout = async (req,res) => {
-
+const logout = async (req, res) => {
     try {
-       let destroy =  req.session.destroy();
-       if(destroy){
-        console.log('destroyed session')
-       }
+        let userId = req.session.user_id;
+        console.log(`User ${userId} logging out`);
 
-        res.redirect('/login')
-
-
+        req.session.destroy((err) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).send("Failed to destroy session");
+            }
+            console.log('Session destroyed');
+            res.redirect('/login');
+        });
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).send("An error occurred");
     }
-
-}
+};
 
 
 const forgotPass = async (req,res) => {
@@ -248,23 +255,24 @@ const fpLink = async (req,res) => {
 
 }
 
-const fpverify = async (req,res) => {
-
+const fpverify = async (req, res) => {
     try {
-        const {otp} = req.body;
+        const { otp } = req.body;
         const email = req.session.email;
-        const OTPData = await OTP.findOne({email:email});
-        if(OTPData && OTPData.otp == parseInt(otp)){
+        const OTPData = await OTP.findOne({ email: email });
+
+        if (OTPData && OTPData.otp == parseInt(otp)) {
             console.log('USER REGISTERED SUCCESSFULLY');
-            res.render('changePassword')
-        }else{
+            res.render('changePassword');
+        } else {
             console.log('USER VERIFICATION FAILED');
-            res.render('fpOTP', {message:'OTP is invalid'})
+            res.render('fpOTP', { message: 'OTP is invalid' });
         }
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
-}
+};
+
 
 
 
@@ -315,7 +323,7 @@ const userProfile = async (req, res) => {
         const userData = await user.findOne({ _id: userId });
         const userAddress = await Address.findOne({ user_id: userId });
 
-        const orderList = await orderSchema.find();
+        const orderList = await orderSchema.find({user:userId});
 
         const addresses = userAddress && userAddress.address ? userAddress.address : [];
 
