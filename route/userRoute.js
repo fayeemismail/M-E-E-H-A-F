@@ -69,6 +69,7 @@ user_route.post('/newPassword', userController.newPassword);
 user_route.get('/singleProduct', userAuth.is_login , userController.singleProduct);
 
 user_route.get('/userProfile', userAuth.is_login , userController.userProfile);
+user_route.get('/orderDetails', userAuth.is_login, userController.orderDetails)
 
 
 
@@ -113,7 +114,10 @@ user_route.post('/subTotalChange', cartController.subtotal);
 
 //ROUTE FOR CHECKOUT 
 user_route.get('/checkout', userAuth.is_login, checkOutController.checkOut);
-user_route.post('/placeOrder', userAuth.is_login, checkOutController.placeOrder)
+user_route.post('/placeOrder', userAuth.is_login, checkOutController.placeOrder);
+user_route.get('/orderSuccess', userAuth.is_login, checkOutController.orderSuccess);
+
+user_route.post('/cancelOrder', userController.cancelOrder)
 
 
 

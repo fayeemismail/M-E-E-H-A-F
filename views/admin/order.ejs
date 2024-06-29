@@ -134,17 +134,17 @@
                         </thead>
                         <tbody>
 
-                            <% orderList.forEach(element => { %>
+                            <% orderList.forEach(( element, index) => { %>
                              
                             <tr>
-                                <td>0901</td>
+                                <td><%= index + 1 %></td>
                                 <td><b><%= element.billingAddress.userName %></b></td>
                                 <td><%= element.billingAddress.email %></td>
                                 <td><%= element.totalAmount %></td>
-                                <td><span class="badge rounded-pill alert-warning">Pending</span></td>
+                                <td><span class="badge rounded-pill alert-warning"><%= element.orderStatus %></span></td>
                                 <td><%= element.createdAt.toLocaleDateString() %></td>
                                 <td class="text-end">
-                                    <a href="#" class="btn btn-md rounded font-sm">Detail</a>
+                                    <a href="/admin/orderDetails?id=<%= element.id %>" class="btn btn-md rounded font-sm">Detail</a>
                                     <div class="dropdown">
                                         <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
                                         <div class="dropdown-menu">
@@ -183,21 +183,7 @@
             </nav>
         </div>
     </section>
-    <!-- content-main end// -->
-    <footer class="main-footer font-xs">
-        <div class="row pb-30 pt-15">
-            <div class="col-sm-6">
-                <script>
-                    document.write(new Date().getFullYear());
-                </script>
-                &copy; Nest - HTML Ecommerce Template .
-            </div>
-            <div class="col-sm-6">
-                <div class="text-sm-end">All rights reserved</div>
-            </div>
-        </div>
-    </footer>
-</main>
+
 
 
 

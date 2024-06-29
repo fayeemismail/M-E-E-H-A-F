@@ -22,11 +22,7 @@ const orderSchema = new mongoose.Schema({
     billingAddress:{
         userName: {type: String, required:true},
         email: {type: String, required:true},
-        address:{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'address',
-            default: 'none'
-        },
+        address:{type: String,},
         city: {type: String, required: true},
         state:{type:String, required:true},
         pincode: {type: String, required:true},

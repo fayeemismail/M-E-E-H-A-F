@@ -52,7 +52,9 @@ admin_route.post('/editProducts',upload.any(), productController.updateProducts)
 
 admin_route.get('/product', productController.addProducts);
 
-admin_route.post('/productBlock', productController.productBlock)
+admin_route.post('/productBlock', productController.productBlock);
+
+admin_route.get('/orderDetails', adminController.orderDetails)
 
 
 

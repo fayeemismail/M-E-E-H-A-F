@@ -534,6 +534,39 @@ const removeAddress = async (req,res) => {
 }
 
 
+const orderDetails = async (req,res) => {
+    try {
+        
+        const orderId = req.query.id
+        const orderDetails = await orderSchema.findById(orderId).populate('Products.Product')
+        if (orderDetails) {
+            res.render('orderDetails', { order:orderDetails });
+        } 
+        
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+const cancelOrder = async (req,res) => {
+    try {
+        const orderId = req.query.id
+        const orderData = await orderSchema.findOne({_id:orderId})
+        console.log(orderData)
+        orderData.orderStatus = 'canceled'
+        const saving = await orderData.save();
+        if(saving){
+            res.send({success: 1})
+            console.log('canceling the order in 561')
+        }else{
+            res.send({success: 0})
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 
 
@@ -557,7 +590,9 @@ module.exports = {
     addAddress,
     editAddress,
     updateAddress,
-    removeAddress
+    removeAddress,
+    orderDetails,
+    cancelOrder
 
 };
 

@@ -116,6 +116,17 @@ const userBlock = async (req, res) => {
 
 
 
+const orderDetails = async (req,res) => {
+    try {
+        const orderId = req.query.id
+        const orderData = await orderSchema.findById(orderId).populate('Products.Product')
+        res.render('orderDetails', {orderData})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
 
 
 
@@ -132,6 +143,7 @@ module.exports = {
     usersList,
     adminVeify,
     userBlock,
-    order
+    order,
+    orderDetails
 
 }

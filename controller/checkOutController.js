@@ -1,7 +1,9 @@
 const cartSchema = require('../models/cartModel');
 const addressSchema = require('../models/addressModel');
 const UserSchema = require('../models/userModel');
-const orderSchema = require('../models/orderModel')
+const orderSchema = require('../models/orderModel');
+const productSchema = require('../models/productModel')
+const { ObjectId } = require('mongodb');
 
 const checkOut = async (req,res) => {
     try {
@@ -20,66 +22,78 @@ const checkOut = async (req,res) => {
 }
 
 
-const placeOrder = async (req,res) => {
+const placeOrder = async (req, res) => {
     try {
-        const {checkAddress} = req.body;
+        const { checkAddress } = req.body;
         const userId = req.session.user_id;
-        const userData = await UserSchema.findOne({_id: userId});
+        const userData = await UserSchema.findOne({ _id: userId });
 
-        const addressData = await addressSchema.findOne({user_id:userId});
-        const correctAddress = addressData.address.find(value => value.id == checkAddress ? value : '' );
-        
-        const findCart = await cartSchema.findOne({user:userId}).populate('Products.Product');
+        const addressData = await addressSchema.findOne({ user_id: userId });
+        const correctAddress = addressData.address.find(value => value.id == checkAddress ? value : '');
+
+        const findCart = await cartSchema.findOne({ user: userId }).populate('Products.Product');
 
         const productDetails = findCart.Products.map(val => ({
             Product: val.Product.id,
             name: val.Product.name,
             quantity: val.quantity,
             price: val.Product.price
-        }))
+        }));
 
-        console.log(productDetails,'details of product')
-       const totalAmount = productDetails.reduce((accu, val)=> {
-            return accu + val.quantity * val.price
-       },0);
-       
-
-       const newOrder = new orderSchema({
-        user: userId,
-        Products: productDetails,
-        billingAddress:{
-            userName: userData.name,
-            email: userData.email,
-            address: correctAddress.id,
-            city:correctAddress.city,
-            state:correctAddress.state,
-            pincode: correctAddress.pincode,
-            mobile: correctAddress.mobile
-        },
-        paymenMethod:'COD',
-        totalAmount: totalAmount,
-        orderStatus: 'Pending'
-       })
-
-       const saving = await newOrder.save();
-
-       if(saving){
-        console.log('order saved');
         
-        res.send({success:1});
-        
-       }
-        
+        const totalAmount = productDetails.reduce((accu, val) => {
+            return accu + val.quantity * val.price;
+        }, 0);
 
+        const newOrder = new orderSchema({
+            user: userId,
+            Products: productDetails,
+            billingAddress: {
+                userName: userData.name,
+                email: userData.email,
+                address: correctAddress.address,
+                city: correctAddress.city,
+                state: correctAddress.state,
+                pincode: correctAddress.pincode,
+                mobile: correctAddress.mobile
+            },
+            paymenMethod: 'COD',
+            totalAmount: totalAmount,
+            orderStatus: 'Pending'
+        });
 
+        const saving = await newOrder.save();
+
+        if (saving) {
+            res.json({ success: true, orderId: saving._id });  // Return order ID
+        }
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).json({ success: false, error: error.message });
     }
-}
+};
+
+
+const orderSuccess = async (req, res) => {
+    try {
+        const orderId = req.query.orderId;
+        const order = await orderSchema.findById(orderId).populate('Products.Product')
+
+        console.log(order)
+        const productDetails = order.Products.map(item => item.Product)
+        const items = await productSchema.find({_id:productDetails})
+        
+
+        res.render('orderSuccess', { cartData:order });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 
 module.exports = {
     checkOut,
     placeOrder,
-
+    orderSuccess
     
 }
