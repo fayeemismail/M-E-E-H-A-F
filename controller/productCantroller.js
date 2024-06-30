@@ -53,6 +53,7 @@ const addProducts = async (req, res) => {
             image: imagePath,
             category
         });
+        console.log(newProduct, 'this is new produc')
 
         // Save new product
         await newProduct.save();

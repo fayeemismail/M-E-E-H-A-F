@@ -455,7 +455,8 @@ const editAddress = async (req, res) => {
 
 const updateAddress = async (req, res) => {
     try {
-        const { id, name, email, mobile, address, city, pincode, state } = req.body;
+        console.log('Request body data:', req.body);
+        const { id, name, mobile, address, city, pincode, state } = req.body;
 
         if (!req.session.user_id) {
             return res.status(400).json({ success: false, message: 'User is not authenticated.' });
@@ -465,7 +466,6 @@ const updateAddress = async (req, res) => {
         if (!name || name.trim() === '' || name.length <= 3 || !/^[a-zA-Z\s]+$/.test(name)) {
             return res.json({ success: false, message: "The Name should contain at least 3 letters and no numbers." });
         }
-        
         if (!mobile || !/^\d{10}$/.test(mobile)) {
             return res.json({ success: false, message: "Mobile number should be exactly 10 digits." });
         }
@@ -483,12 +483,15 @@ const updateAddress = async (req, res) => {
         }
 
         // Log the incoming data for debugging
-        console.log('Incoming data:', { id, name, email, mobile, address, city, pincode, state });
+        console.log('Incoming data:', { id, name, mobile, address, city, pincode, state });
         console.log('User ID from session:', req.session.user_id);
 
         // Update the address
         const updatedAddress = await Address.findOneAndUpdate(
-            { _id: req.session.user_id, 'address._id': id },
+            { 
+                user_id: req.session.user_id, 
+                'address._id': id 
+            },
             {
                 $set: {
                     'address.$.name': name,
@@ -515,6 +518,7 @@ const updateAddress = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
+
 
 
 

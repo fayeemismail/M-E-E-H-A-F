@@ -40,7 +40,7 @@ const placeOrder = async (req, res) => {
             price: val.Product.price
         }));
 
-        
+
         const totalAmount = productDetails.reduce((accu, val) => {
             return accu + val.quantity * val.price;
         }, 0);
@@ -49,7 +49,7 @@ const placeOrder = async (req, res) => {
             user: userId,
             Products: productDetails,
             billingAddress: {
-                userName: userData.name,
+                userName: correctAddress.name,
                 email: userData.email,
                 address: correctAddress.address,
                 city: correctAddress.city,

@@ -65,25 +65,18 @@
 
 
                                 <hr>
-                                <% if (typeof categories !== 'undefined' ) { %>
-                                    <div>
-                                        <label for="form-label" class="fw-bold fs-5">Category</label><br><br>
-                                        <% categories.forEach(element=> { %>
-                                            <input type="radio" name="category" value="<%= element.name %>">
-                                            <span>
-                                                <%= element.name %>
-                                            </span>
-                                            <br><br>
-                                        <% }) %>
-                                    </div>
-                                <% } else { %>
-                                    <div>
-                                        <label for="form-label" class="fw-bold fs-5">Category</label><br><br>
-                                        <input type="radio" name="category" value="<%= element.name %>">
-                                        <span>No Categories Found</span>
-                                        <br><br>
-                                    </div>
-                                <% } %>
+                                <div>
+                                    <label for="category" class="fw-bold fs-5">Category</label><br><br>
+                                    <% if (typeof categories !== 'undefined' && categories.length > 0) { %>
+                                        <select name="category" id="product_category" class="form-select">
+                                            <% categories.forEach(element => { %>
+                                                <option value="<%= element.name %>"><%= element.name %></option>
+                                            <% }) %>
+                                        </select>
+                                    <% } else { %>
+                                        <p>No Categories Found</p>
+                                    <% } %>
+                                </div>
                             </div>
                         </div>
 
@@ -164,7 +157,7 @@
         const description = document.getElementById('product_description').value;
         const price = document.getElementById('product_price').value;
         const stock = document.getElementById('product_stock').value;
-        const category = document.querySelector('input[name="category"]:checked').value;
+        const category = document.getElementById('product_category').value;
 
         const formData = new FormData();
         formData.append('name', name);

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Add Address</title>
+    <title>Edit Address</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -16,9 +16,9 @@
             <div class="col-md-12">
                 <div class="wrap d-md-flex">
                     <div class="login-wrap p-4 p-md-5 w-100">
-                        <h1>Add Address</h1>
-                        <form id="address_form" class="signin-form">
-                            <div id="error-message" class="text-danger"></div>
+                        <h1>Edit Address</h1>
+                        <form id="address_form" class="signin-form" action="/updateAddress" method="POST">
+                            <!-- Form Fields -->
                             <div class="form-group mb-3">
                                 <label for="name">Name</label>
                                 <input type="text" class="form-control" id="name" value="<%= address.name %>" name="name" required>

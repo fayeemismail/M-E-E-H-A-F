@@ -108,15 +108,19 @@
                     <small class="text-muted">Order ID: <%= orderData.id %></small>
                 </div>
                 <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                    <select class="form-select d-inline-block mb-lg-0 mr-5 mw-200">
-                        <option>Change status</option>
-                        <option>Awaiting payment</option>
-                        <option>Confirmed</option>
+                    <select class="form-select d-inline-block mb-lg-0 mr-5 mw-200" id="statusDetails">
+                        <option>Canceled</option>
+                        <option>Pending</option>
                         <option>Shipped</option>
                         <option>Delivered</option>
                     </select>
-                    <a class="btn btn-primary" href="#">Save</a>
-                    <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
+                    <a class="btn btn-primary" onclick="saveDetails(event, '<%= orderData.id %>')" href="" style="display: inline-flex; align-items: center; justify-content: center; width: 100px; height: 40px;">
+                        Save
+                    </a>
+                    <a class="btn btn-secondary back ms-2" href="/admin/order" style="display: inline-flex; align-items: center; justify-content: center; width: 100px; height: 40px;">
+                        <i class="icon material-icons" style="font-size: 14px;">Back</i>
+                    </a>
+
                 </div>
             </div>
         </header>
@@ -176,7 +180,7 @@
             </div>
             <!-- row // -->
             <div class="row">
-                <div class="col-lg-7">
+                <div class="col-lg-12">
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -188,19 +192,25 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <% orderData.Products.forEach(element => { %>
                                 <tr>
+                                   
+                                     
+                                    
                                     <td>
                                         <a class="itemside" href="#">
                                             <div class="left">
-                                                <img src="assets/imgs/items/1.jpg" width="40" height="40" class="img-xs" alt="Item" />
+                                                <img src="/public/productImage/<%= element.Product.image[0] %>" width="50" height="50" class="img-s" alt="Item" />
                                             </div>
-                                            <div class="info">Haagen-Dazs Caramel Cone Ice</div>
+                                            <div class="info"><%= element.name %></div>
                                         </a>
                                     </td>
-                                    <td>$44.25</td>
-                                    <td>2</td>
-                                    <td class="text-end">$99.50</td>
+                                    <td><%= element.price %></td>
+                                    <td><%= element.quantity %></td>
+                                    <td class="text-end"><%= element.price * element.quantity %></td>
+                                    <% }) %>
                                 </tr>
+
                               
                                 <tr>
                                     <td colspan="4">
@@ -208,20 +218,20 @@
                                         <article class="float-end">
                                             <dl class="dlist">
                                                 <dt>Subtotal:</dt>
-                                                <dd>$973.35</dd>
+                                                <dd>₹ <%= orderData.totalAmount %></dd>
                                             </dl>
                                             <dl class="dlist">
                                                 <dt>Shipping cost:</dt>
-                                                <dd>$10.00</dd>
+                                                <dd>₹ 00</dd>
                                             </dl>
                                             <dl class="dlist">
                                                 <dt>Grand total:</dt>
-                                                <dd><b class="h5">$983.00</b></dd>
+                                                <dd><b class="h5">₹ <%= orderData.totalAmount %></b></dd>
                                             </dl>
                                             <dl class="dlist">
                                                 <dt class="text-muted">Status:</dt>
                                                 <dd>
-                                                    <span class="badge rounded-pill alert-success text-success">Payment done</span>
+                                                    <span class="badge rounded-pill alert-success text-success"><%= orderData.orderStatus %></span>
                                                 </dd>
                                             </dl>
                                         </article>
@@ -232,26 +242,7 @@
                     </div>
                     <!-- table-responsive// -->
                 </div>
-                <!-- col// -->
-                <div class="col-lg-1"></div>
-                <div class="col-lg-4">
-                    <div class="box shadow-sm bg-light">
-                        <h6 class="mb-15">Payment info</h6>
-                        <p>
-                            <img src="assets/imgs/card-brands/2.png" class="border" height="20" /> Master Card **** **** 4768 <br />
-                            Business name: Grand Market LLC <br />
-                            Phone: +1 (800) 555-154-52
-                        </p>
-                    </div>
-                    <div class="h-25 pt-4">
-                        <div class="mb-3">
-                            <label>Notes</label>
-                            <textarea class="form-control" name="notes" id="notes" placeholder="Type some note"></textarea>
-                        </div>
-                        <button class="btn btn-primary">Save note</button>
-                    </div>
-                </div>
-                <!-- col// -->
+               
             </div>
         </div>
         <!-- card-body end// -->
@@ -259,6 +250,33 @@
     <!-- card end// -->
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+    function saveDetails(event, orderId){
+        event.preventDefault()
+    
+    const currentStatus = document.getElementById('statusDetails').value 
+    console.log(orderId)
+    fetch('/admin/statusCange', {
+        method: 'POST',
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify({newStatus:currentStatus, orderId:orderId})
+    })
+    .then((response)=> response.json())
+    .then(data => {
+        if(data.success){
+            window.location.href = '/admin/order'
+        }
+    })
+    .catch(error => {
+        console.log(error)
+    })
+}
+</script>
 
 
 

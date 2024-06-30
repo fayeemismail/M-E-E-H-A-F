@@ -126,9 +126,41 @@ const orderDetails = async (req,res) => {
     }
 }
 
+const cancelOrder = async (req,res) => {
+    try {
+        const orderId = req.query.id
+        const orderData = await orderSchema.findOne({_id:orderId})
+        console.log(orderData)
+        orderData.orderStatus = 'canceled'
+        const saving = await orderData.save();
+        if(saving){
+            res.send({success: 1})
+            console.log('canceling the order in 561')
+        }else{
+            res.send({success: 0})
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 
+const statusCange = async (req,res) => {
+    try {
+        const {newStatus, orderId} = req.body
+        const orderData = await orderSchema.findById(orderId);
+        if(orderData){
+            orderData.orderStatus = newStatus
+            const saving = await orderData.save();
 
+            if(saving){
+                res.send({success:1})
+            }
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 
 
@@ -144,6 +176,9 @@ module.exports = {
     adminVeify,
     userBlock,
     order,
-    orderDetails
+    orderDetails,
+    cancelOrder,
+    statusCange,
+
 
 }

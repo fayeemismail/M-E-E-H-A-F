@@ -17,6 +17,7 @@ admin_route.use(bodyParser.urlencoded({extended:true}));
 const adminController = require('../controller/adminController');
 const categoryController = require('../controller/categoryController')
 const productController = require('../controller/productCantroller');
+const usercontroller = require('../controller/userController');
 const upload = require('../middlewares/multer');
 
 //ROUTE FOR ADMIN PAGE HOME
@@ -54,12 +55,16 @@ admin_route.get('/product', productController.addProducts);
 
 admin_route.post('/productBlock', productController.productBlock);
 
-admin_route.get('/orderDetails', adminController.orderDetails)
+admin_route.get('/orderDetails', adminController.orderDetails);
 
 
 
 
-admin_route.get('/order', adminController.order)
+admin_route.get('/order', adminController.order);
+
+admin_route.post('/cancelOrder', adminController.cancelOrder);
+
+admin_route.post('/statusCange', adminController.statusCange)
 
 
 
