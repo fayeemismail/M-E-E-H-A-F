@@ -143,28 +143,18 @@
                                         </div>
                                     </div>
                                     <hr>
-                                    <% if (categories.length> 0 ) { %>
-                                        <div>
-                                            <label for="form-label" class="fw-bold fs-5">Category</label><br><br>
-                                            <% categories.forEach(element=> { %>
-                                                <input type="radio" name="category" id="product_category"
-                                                    value="<%= element.name %>" <% if (element.name==product.category) {
-                                                    %>checked<% } %> >
-                                                    <span>
-                                                        <%= element.name %>
-                                                    </span><br><br>
-                                                    <% }) %>
-
-                                        </div>
+                                    <div>
+                                        <label for="category" class="fw-bold fs-5">Category</label><br><br>
+                                        <% if (typeof categories !== 'undefined' && categories.length > 0) { %>
+                                            <select name="category" id="product_category" class="form-select">
+                                                <% categories.forEach(element => { %>
+                                                    <option value="<%= element.name %>"><%= element.name %></option>
+                                                <% }) %>
+                                            </select>
                                         <% } else { %>
-                                            <div>
-                                                <label for="form-label" class="fw-bold fs-5">Category</label><br><br>
-                                                <input type="radio" name="category" value="<%=  element.name %>">
-                                                <span>No Categories Found</span>
-                                                <br><br>
-                                            </div>
-                                            <% } %>
-                                </div>
+                                            <p>No Categories Found</p>
+                                        <% } %>
+                                    </div>
                             </div>
                             <!-- card end// -->
                             <div class="card mb-4">
@@ -298,7 +288,7 @@
                         let description = document.getElementById('product_description').value;
                         let price = document.getElementById('product_price').value;
                         let stock = document.getElementById('product_stock').value;
-                        let category = document.querySelector('input[name="category"]:checked').value;
+                        let category = document.getElementById('product_category').value;
 
                         let formData = new FormData();
                         formData.append('productId', productId);

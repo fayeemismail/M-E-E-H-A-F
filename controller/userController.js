@@ -6,6 +6,7 @@ const products = require('../models/productModel');
 const category = require('../models/categoryModel')
 const Address = require('../models/addressModel');
 const orderSchema = require('../models/orderModel')
+const cartSchema = require('../models/cartModel')
 
 
 
@@ -18,6 +19,13 @@ const home = async (req, res) => {
 
         const falseCategories = await category.find({status:false});
 
+        
+        if(userData.user_id !== 'undefined'){
+            const cartData = await cartSchema.find({user:userData.user_id}).countDocuments()
+            
+        }else{
+
+        }
         const falseCategoryName = falseCategories.map(category => category.name);
 
         const productsInFalseCategory = allProduct.filter(product => !falseCategoryName.includes(product.category))
@@ -67,6 +75,10 @@ const register = async (req, res) => {
         console.log(error);
     }
 };
+
+
+
+
 
 
 
@@ -482,10 +494,6 @@ const updateAddress = async (req, res) => {
             return res.json({ success: false, message: "Address cannot be empty." });
         }
 
-        // Log the incoming data for debugging
-        console.log('Incoming data:', { id, name, mobile, address, city, pincode, state });
-        console.log('User ID from session:', req.session.user_id);
-
         // Update the address
         const updatedAddress = await Address.findOneAndUpdate(
             { 
@@ -505,8 +513,7 @@ const updateAddress = async (req, res) => {
             { new: true }
         );
 
-        // Log the update result for debugging
-        console.log('Updated address:', updatedAddress);
+        
 
         if (!updatedAddress) {
             return res.status(404).json({ success: false, message: 'Address not found.' });
@@ -596,7 +603,8 @@ module.exports = {
     updateAddress,
     removeAddress,
     orderDetails,
-    cancelOrder
+    cancelOrder,
+    
 
 };
 

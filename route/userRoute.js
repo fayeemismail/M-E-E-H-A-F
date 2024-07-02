@@ -29,6 +29,7 @@ const otpController = require('../controller/otpController');
 const productCantroller = require('../controller/productCantroller');
 const cartController = require('../controller/cartController');
 const checkOutController = require('../controller/checkOutController');
+const wishlistController = require('../controller/wishlistController')
 
 // REQUIRING AUTH MIDDELEWARE
 const userAuth = require('../middlewares/userAuth');
@@ -117,7 +118,16 @@ user_route.get('/checkout', userAuth.is_login, checkOutController.checkOut);
 user_route.post('/placeOrder', userAuth.is_login, checkOutController.placeOrder);
 user_route.get('/orderSuccess', userAuth.is_login, checkOutController.orderSuccess);
 
-user_route.post('/cancelOrder', userController.cancelOrder)
+user_route.post('/cancelOrder', userController.cancelOrder);
+
+
+
+
+//ROUTE FOR WISHLIST
+user_route.get('/wishlist', userAuth.is_login, wishlistController.wishlist);
+user_route.post('/addToWishlist' ,wishlistController.addToWishlist);
+user_route.post('/removeWishlist', wishlistController.removeWishlit);
+user_route.post('/checkWishlist', wishlistController.checkWishlist)
 
 
 

@@ -1,18 +1,28 @@
 const Products = require('../models/productModel');
-const cart = require('../models/cartModel')
+const cart = require('../models/cartModel');
+const categorySchema = require('../models/categoryModel');
+const { product } = require('./adminController');
 
-const showCart = async (req,res) => {
+
+const showCart = async (req, res) => {
     try {
-        const userData = req.session.user_id
-        const cartData = await cart.findOne({user:userData}).populate('Products.Product');
-        if(cartData){
-            
+        const userData = req.session.user_id;
+        const cartData = await cart.findOne({ user: userData }).populate('Products.Product');
+
+        if (!cartData || !cartData.Products || cartData.Products.length === 0) {
+            // Cart is empty or no cart data found
+            res.render('cart', { cartData: { Products: [] } }); // Sending an empty array as Products
+        } else {
+            // Cart data found, render the cart view with cartData
+            res.render('cart', { cartData: cartData });
         }
-    res.render('cart', {cartData:cartData})        
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        // Handle other errors as needed
+        res.status(500).send('Error fetching cart data');
     }
-}
+};
+
 
 
 const checkCart = async (req, res) => {
@@ -50,6 +60,8 @@ const checkCart = async (req, res) => {
     }
 }
 
+
+
 const addCart = async (req,res) => {
 
     try {
@@ -71,7 +83,6 @@ const addCart = async (req,res) => {
             const exist = cartData.Products.find(item => {
                 return item.Product == productId
             })
-            console.log(exist, 'this is existing in the  73 line of cart controller');
 
             if(exist){
                 res.status(200).json({ fail: 'The Product Already In The Cart' })
@@ -93,13 +104,14 @@ const addCart = async (req,res) => {
 
 }
 
+
+
 const removeCart = async (req, res) => {
     try {
         const { productId } = req.body;
         const userId = req.session.user_id; // Assuming you have user authentication and can get the user ID
 
-        console.log('User ID:', userId);
-        console.log('Product ID:', productId);
+      
 
         // Update the cart by removing the product
         const result = await cart.updateOne(
@@ -107,7 +119,6 @@ const removeCart = async (req, res) => {
             { $pull: { Products: { Product: productId } } }
         );
 
-        console.log('Update result:', result);
 
         if (result.nModified > 0) {
             console.log('Product removed successfully');

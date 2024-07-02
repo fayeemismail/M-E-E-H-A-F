@@ -40,6 +40,21 @@ const placeOrder = async (req, res) => {
             price: val.Product.price
         }));
 
+        // Check stock availability
+        for (let i = 0; i < productDetails.length; i++) {
+            const product = await productSchema.findById(productDetails[i].Product);
+
+            if (product.stock < productDetails[i].quantity) {
+                return res.status(400).json({ success: false, message: `Insufficient stock for product ${product.name}` });
+            }
+        }
+
+        // Deduct stock quantities
+        for (let i = 0; i < productDetails.length; i++) {
+            const product = await productSchema.findById(productDetails[i].Product);
+            product.stock -= productDetails[i].quantity;
+            await product.save();
+        }
 
         const totalAmount = productDetails.reduce((accu, val) => {
             return accu + val.quantity * val.price;
@@ -65,6 +80,8 @@ const placeOrder = async (req, res) => {
         const saving = await newOrder.save();
 
         if (saving) {
+            // Clear the cart after the order is saved
+            await cartSchema.findOneAndDelete({ user: userId });
             res.json({ success: true, orderId: saving._id });  // Return order ID
         }
     } catch (error) {
@@ -79,7 +96,7 @@ const orderSuccess = async (req, res) => {
         const orderId = req.query.orderId;
         const order = await orderSchema.findById(orderId).populate('Products.Product')
 
-        console.log(order)
+        
         const productDetails = order.Products.map(item => item.Product)
         const items = await productSchema.find({_id:productDetails})
         
