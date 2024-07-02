@@ -20,22 +20,26 @@ const productController = require('../controller/productCantroller');
 const usercontroller = require('../controller/userController');
 const upload = require('../middlewares/multer');
 
-//ROUTE FOR ADMIN PAGE HOME
+//ROUTE FOR ADMIN PAGES
 admin_route.get('/', adminController.home);
-//ROUTE FOR ADMIN'S LOGIN PAGE
 admin_route.get('/login', adminController.login);
-//ROUTE FOR PRODUCT PAGE
 admin_route.get('/product', adminController.product);
-//ROUTE FOR CATEGORIE PAGE
 admin_route.get('/categories', categoryController.categories);
-//ROUTE FOR USERS LIST PAGE
 admin_route.get('/usersList', adminController.usersList);
+admin_route.post('/categories', categoryController.addCategory);
+admin_route.get('/order', adminController.order);
+admin_route.get('/coupon', adminController.coupon)
+
+
+
+
+
 //ROUTE FOR VERIFYING THE ADMIN 
 admin_route.post('/', adminController.adminVeify)
 // ROUTE FOR BLOCKING THE USER
 admin_route.post('/userBlock', adminController.userBlock);
 //ROUTE FOR CATEGORY PAGE TO ADD CATEGORY
-admin_route.post('/categories', categoryController.addCategory);
+
 //ROUTE FOR EDITCATEGORY PAGE
 admin_route.get('/editCategory', categoryController.editCategory);
 
@@ -60,7 +64,7 @@ admin_route.get('/orderDetails', adminController.orderDetails);
 
 
 
-admin_route.get('/order', adminController.order);
+
 
 admin_route.post('/cancelOrder', adminController.cancelOrder);
 

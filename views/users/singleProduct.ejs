@@ -802,6 +802,84 @@
             console.error('Error:', error);
         });
     }
+
+    //ADD TO WISHLIST
+    function addToWishlist(productId) {
+    // First, check if the product is already in the wishlist
+    fetch('/checkWishlist', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ productId: productId })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not okay');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.inWishlist) {
+            Swal.fire({
+                title: "Product is already in the wishlist",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Go to wishlist!"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    window.location.href = '/wishlist';
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'Add to Wishlist?',
+                text: "Do you want to add this product to the wishlist?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, add it!"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    fetch('/addToWishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ productId: productId })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not okay');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Added!",
+                                text: "Product has been added to the wishlist.",
+                                icon: "success"
+                            });
+                        } else {
+                            console.log('Failed to add the product to the wishlist');
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                }
+            });
+        }
+    })
+    .catch(error => {
+        console.log(error);
+    });
+}
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
